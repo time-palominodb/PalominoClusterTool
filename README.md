@@ -21,8 +21,8 @@ How to Use It
 Prerequisites
 =============
 
-You need a cluster management tool of choice, Ansible, Chef, or Puppet for
-example. You need to use Ubuntu 12.04 LTS on your nodes.
+You need a cluster management tool: Ansible, Chef, or Puppet for example. You
+need to use Ubuntu 12.04 LTS on your nodes.
 
 
 Authors
