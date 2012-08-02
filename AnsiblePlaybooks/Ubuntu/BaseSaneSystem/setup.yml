@@ -1,0 +1,28 @@
+---
+# just copy some files into place
+- hosts: palominoclusternodes
+  user: root
+  vars_files:
+   - ../PalominoClusterToolConfig.yml
+  tasks:
+   - name: Copy script $item onto managed node
+     action: copy src=files/$item dest=/usr/local/bin/$item mode=0755
+     with_items:
+      - fixAptKeys.sh
+      - fixHostName.pl
+
+   # sources.list should point to only our repo
+   - name: Create /etc/apt/sources.list with only our internal server
+     action: template src=templates/etc:apt:sources.list dest=/etc/apt/sources.list owner=root
+
+   # FIXME: Probably should be a template managed by Ansible
+   - name: Get hostname setup properly
+     action: command /usr/local/bin/fixHostName.pl creates=hostNameFixed
+
+   ## # uncomment this if you use public repos
+   ## - name: Ensure apt repo has all missing keys
+   ##   action: command /usr/local/bin/fixAptKeys.sh creates=aptKeysFixed
+
+   - name: Ensure plymouthd is stopped - it uses CPU resources and is useless
+     action: service name=plymouth state=stopped enabled=no
+

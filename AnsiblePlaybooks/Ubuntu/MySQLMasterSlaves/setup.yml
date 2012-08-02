@@ -1,0 +1,32 @@
+---
+# on all hosts, install required software
+- hosts: mysqlmasters:mysqlslaves
+  user: root
+  vars_files:
+    - ./variables.yml
+  tasks:
+   - name: Install $item with force - repos seem quite fragile
+     action: shell export DEBIAN_FRONTEND=noninteractive ; /usr/bin/apt-get -qq --force-yes install $item
+     with_items:
+      - mysql-server-5.5
+
+
+# ensure masters have proper config
+- hosts: mysqlmasters
+  user: root
+  vars_files:
+   - ./variables.yml
+  tasks:
+   - name: Setup Master Configuration
+     action: shell ls -al
+
+
+# ensure slaves have proper config
+- hosts: mysqlslaves
+  user: root
+  vars_files:
+   - ./variables.yml
+  tasks:
+   - name: Setup Slave Configuration
+     action: shell ls -al
+

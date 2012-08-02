@@ -1,0 +1,6 @@
+---
+# these are configurations specific to your environment
+
+# your apt repository:
+aptrepo: http://10.31.41.10/ubuntu
+

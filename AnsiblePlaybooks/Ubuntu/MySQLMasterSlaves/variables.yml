@@ -1,0 +1,5 @@
+---
+# variables for MySQL Master/Slaves
+mysql_slave_innodb_percent: "50/100"
+mysql_master_innodb_percent: "40/100"
+

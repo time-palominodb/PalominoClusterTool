@@ -12,12 +12,11 @@ the performance of the cluster.
 How to Use It
 =============
 
-1. Allocate cluster nodes
-1. Pick your database architecture
-1. Give roles to the nodes
-1. Ask PalominoClusterTool to generate cluster config within Ansible/Chef/Puppet
-1. Configure Ansible/Chef/Puppet (if not already done)
-1. Kick off Ansible/Chef/Puppet job to build cluster
+   1. Allocate cluster nodes, ensure root@node is available to your Management machine
+   1. On your Management machine, collect all database-related packages
+   1. Decide your distribution, cluster configuration software, and database architecture
+   1. Enter [ConfigManager]/[Distribution] directory, edit INI and YAML files
+   1. Ask PalominoClusterTool to generate your cluster
 
 
 What is it?
@@ -44,5 +43,5 @@ we recommend beginning with Ansible since it is the simplest.
 Authors
 =======
 
-Tim Ellis, CTO PalominoDB
+   * Tim Ellis, CTO PalominoDB
 

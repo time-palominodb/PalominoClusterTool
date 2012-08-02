@@ -1,0 +1,37 @@
+deb {{ aptrepo }} binary/
+
+### #deb cdrom:[Ubuntu 12.04 LTS _Precise Pangolin_ - Release i386 (20120423)]/ precise main restricted
+### 
+### deb http://us.archive.ubuntu.com/ubuntu/ precise main restricted
+### #deb-src http://us.archive.ubuntu.com/ubuntu/ precise main restricted
+### deb http://us.archive.ubuntu.com/ubuntu/ precise-updates main restricted
+### #deb-src http://us.archive.ubuntu.com/ubuntu/ precise-updates main restricted
+### deb http://security.ubuntu.com/ubuntu precise-security main restricted
+### #deb-src http://security.ubuntu.com/ubuntu precise-security main restricted
+### 
+### ## This software is not part of Ubuntu, but is offered by third-party
+### ## developers who want to ship their latest software.
+### deb http://extras.ubuntu.com/ubuntu precise main
+### #deb-src http://extras.ubuntu.com/ubuntu precise main
+### 
+### ## deb http://us.archive.ubuntu.com/ubuntu/ precise universe
+### ## deb-src http://us.archive.ubuntu.com/ubuntu/ precise universe
+### ## deb http://us.archive.ubuntu.com/ubuntu/ precise-updates universe
+### ## deb-src http://us.archive.ubuntu.com/ubuntu/ precise-updates universe
+### 
+### ## deb http://us.archive.ubuntu.com/ubuntu/ precise multiverse
+### ## deb-src http://us.archive.ubuntu.com/ubuntu/ precise multiverse
+### ## deb http://us.archive.ubuntu.com/ubuntu/ precise-updates multiverse
+### ## deb-src http://us.archive.ubuntu.com/ubuntu/ precise-updates multiverse
+### 
+### ## deb http://us.archive.ubuntu.com/ubuntu/ precise-backports main restricted universe multiverse
+### ## deb-src http://us.archive.ubuntu.com/ubuntu/ precise-backports main restricted universe multiverse
+### 
+### ## deb http://security.ubuntu.com/ubuntu precise-security universe
+### ## deb-src http://security.ubuntu.com/ubuntu precise-security universe
+### ## deb http://security.ubuntu.com/ubuntu precise-security multiverse
+### ## deb-src http://security.ubuntu.com/ubuntu precise-security multiverse
+### 
+### # deb http://archive.canonical.com/ubuntu precise partner
+### # deb-src http://archive.canonical.com/ubuntu precise partner
+
