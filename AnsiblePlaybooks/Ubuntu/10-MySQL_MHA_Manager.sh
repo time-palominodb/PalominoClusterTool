@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ $USER == "root" ] ; then
+	echo "Note!!! ===================================="
+	echo "This script does NOT need to be run as root (probably). When in doubt, run"
+	echo "it as a regular user. Continuing normally."
+	echo ""
+fi
+
 ansibleHosts='/etc/ansible/hosts'
 ansibleFlags='-f 8 -v'
 
@@ -46,21 +53,21 @@ fi
 # make common configuration changes, etc
 echo ""
 echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbook. ========================"
-ansible-playbook $ansibleFlags ./BaseSaneSystem/setup.yml | grep -v ^$
+ansible-playbook $ansibleFlags ./BaseSaneSystem/setup.yml
 
 
 # First: Install MySQL Master and Slaves on database nodes
 echo ""
 echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbook. ========================"
-ansible-playbook $ansibleFlags ./MySQLMasterSlaves/setup.yml | grep -v ^$
+ansible-playbook $ansibleFlags ./MySQLMasterSlaves/setup.yml
 
 # Second: Install HAproxy on the database client nodes
 echo ""
 echo " - `date` :: $0 Running HAproxy Ansible Playbook. ========================"
-ansible-playbook $ansibleFlags ./HAProxy/setup.yml | grep -v ^$
+ansible-playbook $ansibleFlags ./HAProxy/setup.yml
 
 # Third: Install MHA on MHA manager and MHA nodes
 echo ""
 echo " - `date` :: $0 Running MHA Ansible Playbook. ========================"
-ansible-playbook $ansibleFlags ./MHA/setup.yml | grep -v ^$
+ansible-playbook $ansibleFlags ./MHA/setup.yml
 

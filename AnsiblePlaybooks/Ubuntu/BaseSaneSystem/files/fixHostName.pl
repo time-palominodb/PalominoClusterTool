@@ -7,9 +7,11 @@ if ($ENV{USER} ne 'root') {
 	die "Run this script as root, yo."
 }
 
-my $ipInfo = `/sbin/ifconfig`;
-my $ipAddr = 'UNKNOWN';
+# best guess as to proper IP addresses
+my $ipInfo = `/sbin/ifconfig | grep 'inet addr' | grep -v 127.0.0`;
 
+# only supporting 10.* and 192.* networks for now - sorry
+my $ipAddr;
 if ($ipInfo =~ /inet addr:((192|10)\..+?)\s/) {
 	$ipAddr = $1;
 } else {
@@ -18,12 +20,12 @@ if ($ipInfo =~ /inet addr:((192|10)\..+?)\s/) {
 
 print " + Got ipAddr = $ipAddr\n";
 
-# hostname gets to be vb+final octet
-my $hostName = 'UNKNOWN';
-if ($ipAddr =~ /\.(\d+)$/) {
-	$hostName = "vb$1";
+# hostname gets to be pdbct + final octets
+my $hostName;
+if ($ipAddr =~ /\.(\d+)\.(\d+)$/) {
+	$hostName = "pdbct-$1-$2";
 } else {
-	die "Unable to parse final octet from $ipAddr";
+	die "Unable to parse final octets from $ipAddr";
 }
 
 print " + Set hostname to $hostName\n";

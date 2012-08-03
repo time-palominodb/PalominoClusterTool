@@ -1,6 +1,9 @@
 ---
 # these are configurations specific to your environment
 
-# your apt repository:
+# your apt repository. if you want to use public ones, edit
+# BaseSaneSystem/templates/etc:apt:sources.list, set it up with your preferred
+# list of repos, and remove the {{ aptrepo }} variable therein - you can
+# leave this variable definition alone
 aptrepo: http://10.31.41.10/ubuntu
 

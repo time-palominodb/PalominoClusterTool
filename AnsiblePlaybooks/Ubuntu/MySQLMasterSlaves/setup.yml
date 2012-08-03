@@ -3,30 +3,77 @@
 - hosts: mysqlmasters:mysqlslaves
   user: root
   vars_files:
-    - ./variables.yml
+   - ../PalominoClusterToolConfig.yml
   tasks:
-   - name: Install $item with force - repos seem quite fragile
-     action: shell export DEBIAN_FRONTEND=noninteractive ; /usr/bin/apt-get -qq --force-yes install $item
+   - name: Install MysQL with force - apt repos seem quite fragile
+     action: apt name=$item state=installed force=yes update_cache=yes
      with_items:
       - mysql-server-5.5
 
+   - name: Copy Configuration postprocessing scripts
+     action: copy src=files/$item dest=/usr/local/bin/$item owner=root mode=0755
+     with_items:
+      - fixMySQLconfig.pl
+      - fixMySQLulimits.pl
 
+   - name: Give MySQL user proper limits
+     action: command /usr/local/bin/fixMySQLulimits.pl /etc/security/limits.conf /etc/pam.d/common-session
+
+
+## # ERROR: with_items is not a legal parameter in an Ansible Playbook
+## # -----------------------------------------------------------------
+## # Therefore I do the same thing twice, once for masters, once for slaves
 # ensure masters have proper config
 - hosts: mysqlmasters
   user: root
   vars_files:
-   - ./variables.yml
+   - ./variables-masters.yml
+   - ../PalominoClusterToolConfig.yml
   tasks:
-   - name: Setup Master Configuration
-     action: shell ls -al
-
-
+   - name: Setup MySQL Configuration for masters
+     action: template src=templates/my.cnf dest=/etc/mysql/my.cnf owner=mysql mode=0644
 # ensure slaves have proper config
 - hosts: mysqlslaves
   user: root
   vars_files:
-   - ./variables.yml
+   - ./variables-slaves.yml
+   - ../PalominoClusterToolConfig.yml
   tasks:
-   - name: Setup Slave Configuration
-     action: shell ls -al
+   - name: Setup MySQL Configuration for slaves
+     action: template src=templates/my.cnf dest=/etc/mysql/my.cnf owner=mysql mode=0644
+
+
+## # if ever with_items is a legal parameter in Ansible Playbook
+## # -----------------------------------------------------------
+## # ensure masters/slaves have proper config
+## - hosts: mysql$item
+##   user: root
+##   vars_files:
+##    - ./variables-$item.yml
+##    - ../PalominoClusterToolConfig.yml
+##   tasks:
+##    - name: Setup MySQL Configuration for $item
+##      action: template src=templates/my.cnf dest=/etc/mysql/my.cnf owner=mysql mode=0644
+## 
+##      # my.cnf post-processing
+##    - name: Remove default settings from MySQL Configuration for $item
+##      action: command /usr/local/bin/fixMySQLconfig.pl /etc/mysql/my.cnf
+## 
+##    - name: Bounce mysqld - TODO - Convert to handler only do if my.cnf changed
+##      action: service name=mysql state=restarted
+##   with_items:
+##    - masters
+##    - slaves
+
+
+- hosts: mysqlmasters:mysqlslaves
+  user: root
+  vars_files:
+   - ../PalominoClusterToolConfig.yml
+  tasks:
+   - name: Post-process MySQL Configuration
+     action: command /usr/local/bin/fixMySQLconfig.pl /etc/mysql/my.cnf
+
+   - name: Bounce mysqld - TODO - Convert to handler only do if my.cnf changed
+     action: service name=mysql state=restarted
 

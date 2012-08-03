@@ -1,0 +1,135 @@
+---
+# ==============================================================================
+# MySQL Server my.cnf settings - change these them depending on the sort of
+# hardware you allocated and workload expected.
+#
+# NOTE: If a given variable looks like this:
+#   xyz: "xyz"
+# That means it's a variable with no value in my.cnf, to disable this variable,
+# set its value to "", like this:
+#   xyz: ""
+# ==============================================================================
+
+mysql:
+  # settings dealing with masterness or slaveness - uncomment one set
+  # if you have SSDs, set innodb_flush_log_at_trx_commit to 1 no matter what
+  ## ----- # slave settings
+  read_only: "read_only"
+  innodb_flush_log_at_trx_commit: 2
+  auto_increment_increment: "LEAVE_AT_DEFAULT_SETTING"
+  auto_increment_offset: "LEAVE_AT_DEFAULT_SETTING"
+  ## ----- # master settings
+  ## read_only: ""
+  ## innodb_flush_log_at_trx_commit: 1
+  ## auto_increment_increment: 1
+  ## auto_increment_offset: 1
+  ## ----- # end master|slave settings
+
+  # query cache is almost never useful
+  query_cache_type: 0
+  query_cache_size: "0M"
+  query_cache_limit: "1M"
+
+  # file locations
+  datadir: "/var/lib/mysql"
+  tmpdir: "/tmp"
+  slow_query_log_file: "/var/log/mysql/slow-log"
+  socket: "/var/run/mysqld/mysqld.sock"
+
+  # replication
+  log_bin: "/var/log/mysql/bin-log"
+  relay_log: "/var/log/mysql/relay-log"
+  expire_logs_days: 14
+  log_slave_updates: "log_slave_updates"
+  skip_slave_start: "skip_slave_start"
+
+  # modern cache sizes
+  table_open_cache: 1024
+  thread_cache_size: 128
+  table_definition_cache: 2048
+
+  # networking
+  bind_address: "0.0.0.0"
+  port: 3306
+  back_log: 100
+  # very workload-dependent - 10000 not uncommon - raise if you get too-many-connections errors
+  max_connections: 500
+  max_connect_errors: 15000
+  max_allowed_packet: "64M"
+
+  # seconds timeouts
+  interactive_timeout: 600
+  wait_timeout: 120
+  skip_name_resolve: "skip_name_resolve"
+
+  # temp tables
+  tmp_table_size: "LEAVE_AT_DEFAULT_SETTING"
+  max_heap_table_size: "LEAVE_AT_DEFAULT_SETTING"
+
+  # settings for SSD- or HDD-based systems. Uncomment one set
+  ## ----- # SSD settings
+  ## # We experience poor performance with ALL_O_DIRECT - use O_DIRECT
+  ## innodb_flush_log_at_trx_commit: 1
+  ## innodb_flush_method: "O_DIRECT"
+  ## innodb_adaptive_checkpoint: "keep_average"
+  ## innodb_adaptive_flushing: 1
+  ## innodb_flush_neighbor_pages: 0
+  ## innodb_read_ahead: 0
+  ## innodb_file_format: "Barracuda"
+  ## innodb_io_capacity: 20000
+  ## ----- # HDD settings
+  innodb_flush_method: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_adaptive_checkpoint: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_adaptive_flushing: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_flush_neighbor_pages: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_read_ahead: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_file_format: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_io_capacity: "LEAVE_AT_DEFAULT_SETTING"
+  ## ----- # end SSD|HDD settings
+
+  # Sane values (if you change at all) are:
+  # write threads = Spindle count
+  # read threads = CPU count
+  # thread concurrency = Core count
+  innodb_write_io_threads: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_read_io_threads: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_thread_concurrency: "LEAVE_AT_DEFAULT_SETTING"
+
+  # InnoDB settings
+  # set to total RAM minus about 4-8GB for OS
+  innodb_buffer_pool_size: "512M"
+  # small=512M, medium=1G, large=2G
+  innodb_log_file_size: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_log_files_in_group: 2
+  innodb_log_buffer_size: "LEAVE_AT_DEFAULT_SETTING"
+  innodb_open_files: 300
+  innodb_file_per_table: 1
+
+  # MyISAM
+  key_buffer_size: "LEAVE_AT_DEFAULT_SETTING"
+  myisam_sort_buffer_size: "LEAVE_AT_DEFAULT_SETTING"
+
+  # logging
+  log_output: "FILE"
+  slow_query_log: 1
+  long_query_time: 4
+  sync_binlog: 1
+
+  # per-thread buffers - rarely need tuned
+  sort_buffer_size: "LEAVE_AT_DEFAULT_SETTING"
+  read_buffer_size: "LEAVE_AT_DEFAULT_SETTING"
+  read_rnd_buffer_size: "LEAVE_AT_DEFAULT_SETTING"
+  join_buffer_size: "LEAVE_AT_DEFAULT_SETTING"
+
+  # If this is InnoDB, it can cause slowness if temporary tables are used
+  # extensively since MyISAM is generally faster for temp tables
+  default_storage_engine: "LEAVE_AT_DEFAULT_SETTING"
+
+  # miscellaneous parameters
+  timezone: "UTC"
+  character_set: "utf8"
+  # small=500, medium=5000, large=20000 - must set ulimits
+  open_files_limit: 5000
+  # you probably always want this to be 1
+  skip_external_locking: 1
+

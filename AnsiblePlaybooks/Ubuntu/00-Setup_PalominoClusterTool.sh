@@ -36,4 +36,7 @@ echo " o This machine is now an Ubuntu repository. If you'd rather use other sou
 echo "   edit BaseSaneSystem/templates/etc:apt:sources.list and add your sources there."
 echo ""
 echo " o Next step: edit PalominoClusterToolConfig.yml."
+echo ""
+echo ' o You may also want to edit MySQLMasterSlaves/variables-[masters|slaves].yml'
+echo '   to match your chosen hardware config.'
 
