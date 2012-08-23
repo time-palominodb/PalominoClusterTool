@@ -12,11 +12,14 @@ the performance of the cluster.
 How to Use It
 =============
 
-   1. Allocate cluster nodes, ensure root@node is available to your Management machine
-   1. On your Management machine, collect all database-related packages
-   1. Decide your distribution, cluster configuration software, and database architecture
-   1. Enter [ConfigManager]/[Distribution] directory, edit INI and YAML files
-   1. Ask PalominoClusterTool to generate your cluster
+   1. Allocate cluster nodes, ensure passwordless SSH user with sudo is
+      available to your Management machine.
+   2. Decide your distribution, cluster configuration software, and database
+      architecture.
+   3. Enter [ConfigManager]/[Distribution] directory, edit INI and YAML files
+      (this will take the longest time).
+   4. Ask PalominoClusterTool to generate your cluster.
+   5. Join the mailing list and IRC channels to report errors or concerns.
 
 
 What is it?
