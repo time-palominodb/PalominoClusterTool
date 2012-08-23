@@ -1,0 +1,23 @@
+---
+# on all hosts, install required software
+- hosts: mysqlmasters:mysqlslaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../PalominoClusterToolConfig.yml
+  tasks:
+   - name: Copy Configuration postprocessing scripts
+     action: copy src=files/$item dest=/usr/local/bin/$item owner=root mode=0755
+     with_items:
+      - fixMySQLconfig.pl
+      - fixMySQLulimits.pl
+      - generateChangeMasterSQL.pl
+
+   - name: Install MysQL with force - apt repos seem quite fragile
+     action: apt name=$item state=installed force=yes update_cache=yes
+     with_items:
+      - mysql-server-5.5
+
+   - name: Give MySQL user proper limits
+     action: command /usr/local/bin/fixMySQLulimits.pl /etc/security/limits.conf /etc/pam.d/common-session
+

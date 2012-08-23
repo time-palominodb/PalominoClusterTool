@@ -1,31 +1,11 @@
 ---
-# on all hosts, install required software
-- hosts: mysqlmasters:mysqlslaves
-  user: root
-  vars_files:
-   - ../PalominoClusterToolConfig.yml
-  tasks:
-   - name: Install MysQL with force - apt repos seem quite fragile
-     action: apt name=$item state=installed force=yes update_cache=yes
-     with_items:
-      - mysql-server-5.5
-
-   - name: Copy Configuration postprocessing scripts
-     action: copy src=files/$item dest=/usr/local/bin/$item owner=root mode=0755
-     with_items:
-      - fixMySQLconfig.pl
-      - fixMySQLulimits.pl
-
-   - name: Give MySQL user proper limits
-     action: command /usr/local/bin/fixMySQLulimits.pl /etc/security/limits.conf /etc/pam.d/common-session
-
-
 ## # ERROR: with_items is not a legal parameter in an Ansible Playbook
 ## # -----------------------------------------------------------------
 ## # Therefore I do the same thing twice, once for masters, once for slaves
 # ensure masters have proper config
 - hosts: mysqlmasters
-  user: root
+  user: ubuntu
+  sudo: True
   vars_files:
    - ./variables-masters.yml
    - ../PalominoClusterToolConfig.yml
@@ -34,7 +14,8 @@
      action: template src=templates/my.cnf dest=/etc/mysql/my.cnf owner=mysql mode=0644
 # ensure slaves have proper config
 - hosts: mysqlslaves
-  user: root
+  user: ubuntu
+  sudo: True
   vars_files:
    - ./variables-slaves.yml
    - ../PalominoClusterToolConfig.yml
@@ -45,9 +26,10 @@
 
 ## # if ever with_items is a legal parameter in Ansible Playbook
 ## # -----------------------------------------------------------
-## # ensure masters/slaves have proper config
+## # ensure masters/slaves both have proper config
 ## - hosts: mysql$item
-##   user: root
+##   user: ubuntu
+##   sudo: True
 ##   vars_files:
 ##    - ./variables-$item.yml
 ##    - ../PalominoClusterToolConfig.yml
@@ -67,7 +49,8 @@
 
 
 - hosts: mysqlmasters:mysqlslaves
-  user: root
+  user: ubuntu
+  sudo: True
   vars_files:
    - ../PalominoClusterToolConfig.yml
   tasks:

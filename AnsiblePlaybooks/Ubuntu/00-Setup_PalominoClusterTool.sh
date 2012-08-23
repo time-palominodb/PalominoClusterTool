@@ -1,22 +1,30 @@
 #!/bin/bash
 
 if [ ! "$USER" == "root" ] ; then
+	echo "You must run this as root. For example:"
 	echo ""
-	echo "ERROR: Run this as root please."
+	echo "sudo $0"
+	echo ""
 	exit 255
 fi
 
-echo " - Installing Apache2 Locally"
-apt-get install apache2
-
-echo " - Configuring Ubuntu software repository"
-thecwd=`pwd`
-cd /var/www
-[ -d ubuntu ] || mkdir -p ubuntu
-cd ubuntu
-[ -s binary ] || ln -s /var/cache/apt/archives ./binary
-[ -f binary/Packages.gz ] || dpkg-scanpackages binary /dev/null | gzip -9c > binary/Packages.gz
-cd $thecwd
+# uncomment this section to turn your local host into an Ubuntu software repository.
+# this is unlikely to actually work, though, so it's not recommended
+## echo " - Configuring Ubuntu software repository"
+## 
+## echo " - Installing Apache2 Locally"
+## apt-get install apache2
+## 
+## thecwd=`pwd`
+## cd /var/www
+## [ -d ubuntu ] || mkdir -p ubuntu
+## cd ubuntu
+## [ -s binary ] || ln -s /var/cache/apt/archives ./binary
+## [ -f binary/Packages.gz ] || dpkg-scanpackages binary /dev/null | gzip -9c > binary/Packages.gz
+## cd $thecwd
+## echo " o This machine is now an Ubuntu repository. If you'd rather use other sources,"
+## echo "   edit BaseSaneSystem/templates/etc:apt:sources.list and add your sources there."
+## echo ""
 
 echo " - Configuring Ansible hosts"
 
@@ -31,9 +39,6 @@ if [ $palominoAnsible -eq 0 ] ; then
 	cat $layoutFile >> /etc/ansible/hosts
 fi
 
-echo ""
-echo " o This machine is now an Ubuntu repository. If you'd rather use other sources,"
-echo "   edit BaseSaneSystem/templates/etc:apt:sources.list and add your sources there."
 echo ""
 echo " o Next step: edit PalominoClusterToolConfig.yml."
 echo ""

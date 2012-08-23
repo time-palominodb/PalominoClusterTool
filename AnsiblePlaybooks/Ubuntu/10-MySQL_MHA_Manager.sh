@@ -1,10 +1,13 @@
 #!/bin/bash
 
 if [ $USER == "root" ] ; then
-	echo "Note!!! ===================================="
-	echo "This script does NOT need to be run as root (probably). When in doubt, run"
-	echo "it as a regular user. Continuing normally."
+	echo "This script does NOT need to be run as root (probably). If you disagree, edit the script"
+	echo "and remove the code that quits when you're root. Exiting abnormally."
 	echo ""
+	echo "Example usage:"
+	echo "$0"
+	echo ""
+	exit 255
 fi
 
 ansibleHosts='/etc/ansible/hosts'
@@ -17,8 +20,8 @@ ansibleFlags='-f 8 -v'
 # there will be 4 or more slaves to the master
 echo " - Checking master/slaves configuration."
 echo "   You should have one master and at least 2 slaves defined."
-mysqlmasters=`grep -c 'mysqlmasters' $ansibleHosts`
-mysqlslaves=`grep -c 'mysqlslaves' $ansibleHosts`
+mysqlmasters=`fgrep -c '[mysqlmasters' $ansibleHosts`
+mysqlslaves=`fgrep -c '[mysqlslaves' $ansibleHosts`
 if [ $mysqlmasters -ne 1 ] ; then
 	echo "There must be one [mysqlmasters] section in $ansibleHosts - found $mysqlmasters"
 	exit 255
@@ -33,7 +36,7 @@ fi
 # load balancer, have these HAproxy be simple pass-through to that LB
 echo " - Checking HAproxy configuration. You should have a load balancer"
 echo "   defined on every DB client node."
-haproxynodes=`grep -c 'haproxynodes' $ansibleHosts`
+haproxynodes=`fgrep -c '[haproxynodes' $ansibleHosts`
 if [ $haproxynodes -ne 1 ] ; then
 	echo "There must be one [haproxynodes] section in $ansibleHosts - found $haproxynodes"
 	exit 255
@@ -42,9 +45,9 @@ fi
 # MHA reconfigures replication topology
 echo " - Checking MHA configuration. You need one MHA manager running on its"
 echo "   own hardware, and MHA nodes running on the DB clients."
-mhanodes=`grep -c 'mhanodes' $ansibleHosts`
+mhanodes=`fgrep -c '[mhanodes' $ansibleHosts`
 if [ $mhanodes -ne 1 ] ; then
-	echo "There must be one [haproxynodes] section in $ansibleHosts - found $mhanodes"
+	echo "There must be one [mhanodes] section in $ansibleHosts - found $mhanodes"
 	exit 255
 fi
 
@@ -59,7 +62,9 @@ ansible-playbook $ansibleFlags ./BaseSaneSystem/setup.yml
 # First: Install MySQL Master and Slaves on database nodes
 echo ""
 echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbook. ========================"
-ansible-playbook $ansibleFlags ./MySQLMasterSlaves/setup.yml
+for i in `ls -1 ./MySQLMasterSlaves/??-*.yml` ; do
+	ansible-playbook $ansibleFlags $i
+done
 
 # Second: Install HAproxy on the database client nodes
 echo ""
