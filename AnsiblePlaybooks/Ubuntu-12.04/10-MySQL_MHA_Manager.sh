@@ -10,8 +10,10 @@ if [ $USER == "root" ] ; then
 	exit 255
 fi
 
+# -f 10 - fork ten processes at a time
+# -v    - verbosity
+ansibleFlags='-f 10'
 ansibleHosts='/etc/ansible/hosts'
-ansibleFlags='-f 8 -v'
 
 # Sanity Check Overall Configuration
 
@@ -59,20 +61,24 @@ echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbook. ===========
 ansible-playbook $ansibleFlags ./BaseSaneSystem/setup.yml
 
 
-# First: Install MySQL Master and Slaves on database nodes
+# MySQL Master and Slaves on database nodes
 echo ""
 echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbook. ========================"
 for i in `ls -1 ./MySQLMasterSlaves/??-*.yml` ; do
+	echo "   - `date` :: $i"
 	ansible-playbook $ansibleFlags $i
 done
 
-# Second: Install HAproxy on the database client nodes
+# MHA on MHA manager and MHA nodes
+echo ""
+echo " - `date` :: $0 Running MHA Ansible Playbook. ========================"
+for i in `ls -1 ./MHA/??-*.yml` ; do
+	echo "   - `date` :: $i"
+	ansible-playbook $ansibleFlags $i
+done
+
+# HAproxy on the database client nodes
 echo ""
 echo " - `date` :: $0 Running HAproxy Ansible Playbook. ========================"
 ansible-playbook $ansibleFlags ./HAProxy/setup.yml
-
-# Third: Install MHA on MHA manager and MHA nodes
-echo ""
-echo " - `date` :: $0 Running MHA Ansible Playbook. ========================"
-ansible-playbook $ansibleFlags ./MHA/setup.yml
 

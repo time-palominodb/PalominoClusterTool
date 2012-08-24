@@ -1,0 +1,29 @@
+---
+# install MHA manager software - it would appear MHA manager depends on
+# MHA node from a dpkg point of view, so I install everything everywhere
+- hosts: mhamanager:mhanodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../PalominoClusterToolConfig.yml
+  tasks:
+   - name: install MHA dependencies on MHA manager
+     action: apt name=$item state=installed
+     with_items:
+      - libdbd-mysql-perl
+      - libconfig-tiny-perl
+      - liblog-dispatch-perl
+      - libparallel-forkmanager-perl
+
+   - name: download MHA software
+     action: command creates=/tmp/$item /usr/bin/curl http://mysql-master-ha.googlecode.com/files/$item -o /tmp/$item
+     with_items:
+      - mha4mysql-node_0.53_all.deb
+      - mha4mysql-manager_0.53_all.deb
+
+   - name: install MHA software
+     action: command /usr/bin/dpkg -i /tmp/$item
+     with_items:
+      - mha4mysql-node_0.53_all.deb
+      - mha4mysql-manager_0.53_all.deb
+
