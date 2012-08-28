@@ -40,6 +40,10 @@ that need to be generated. If your desired OS/CMS/ClusterType isn't
 represented, please join the mailing list and/or IRC to discuss it. There may
 be others with the same needs, or who are already working on it.
 
+There is a set of slides on the various architectures to be supported, hopeful
+timelines, and project architecture here:
+http://dev.palominodb.com/time_public_html/PalominoDBClusterTool/.
+
 
 Prerequisites
 =============
@@ -59,4 +63,12 @@ database systems, please contact us! We'd love to hear about it and welcome
 your participation in the project.
 
    * Tim Ellis, CTO PalominoDB - Ansible Playbooks
+
+
+License
+=======
+
+The project and all related scripts, playbooks, manifests, recipes are distributed
+under the terms of the GNU GPL version 2. The license is in the root directory of
+the project source control repo.
 
