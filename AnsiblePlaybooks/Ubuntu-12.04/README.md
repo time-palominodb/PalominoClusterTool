@@ -8,8 +8,9 @@ Steps to Perform for All Cluster Types
 Steps to Set Up MySQL + MHA
 ===========================
 
-   1. Edit MySQL_MHA_PalominoClusterToolTemplate.ini and put in your list
-      of servers. Copy the result into /etc/ansible/hosts.
+   1. Symlink PalominoClusterToolLayout.ini to the cluster type you want to build.
+   2. Edit PalominoClusterToolLayout.ini and put in your list of servers. Copy
+      the result into /etc/ansible/hosts.
    2. Edit MySQLMasterSlaves/variables-masters.yml and set the MySQL variables
       according to how you'd like. The files have comments to help you decide
       if you're not a guru MySQL DBA.

@@ -8,6 +8,12 @@
 # That means it's a variable with no value in my.cnf, to disable this variable,
 # set its value to "", like this:
 #   xyz: ""
+#
+# you should strive to leave all logs in /var/log/mysql and all databases in
+# /var/lib/mysql and all lockfiles in /var/run/mysql - if you do change any of
+# these locations, make sure you change them for MHA and other components as
+# well. it'll likely be easier to just use symlinks if you prefer the physical
+# files not to be in those locations
 # ==============================================================================
 
 mysql:
@@ -39,9 +45,11 @@ mysql:
   # replication
   log_bin: "/var/log/mysql/bin-log"
   relay_log: "/var/log/mysql/relay-log"
+  relay_log_index: "/var/log/mysql/relay-log.index"
+  relay_log_info_file: "/var/log/mysql/relay-log.info"
   expire_logs_days: 14
   log_slave_updates: "log_slave_updates"
-  skip_slave_start: "skip_slave_start"
+  skip_slave_start: ""
 
   # modern cache sizes
   table_open_cache: 1024

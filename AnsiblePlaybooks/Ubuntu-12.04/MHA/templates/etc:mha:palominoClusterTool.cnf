@@ -1,0 +1,40 @@
+[server default]
+# mysql user and password
+user={{ mysql_root_user }}
+password={{ mysql_root_password }}
+
+# mysql log locations
+master_binlog_dir={{ mysql_log_dir }}
+
+# user to use to SSH around the cluster
+ssh_user={{ cluster_passwordlessSudoUser }}
+
+# working directory on the manager
+manager_log={{ mha_log_directory }}/mhamanager.log
+manager_workdir={{ mha_log_directory }}
+remote_workdir={{ mha_log_directory }}
+
+# MHA ping interval
+ping_interval=3
+
+## # scripts to support MHA functions
+## secondary_check_script={{ mha_home_directory }}/masterha_secondary_check -s remote_host1 -s remote_host2
+## master_ip_failover_script={{ mha_home_directory }}/master_ip_failover
+## shutdown_script={{ mha_home_directory }}/power_manager
+## report_script={{ mha_home_directory }}/send_master_failover_mail
+
+# all the hosts in the MHA cluster follow -------------------------
+
+# masters
+{% for host in groups['mysqlmasters'] %}
+[server{{ host }}]
+hostname={{ hostvars[host]['ansible_default_ipv4']['address'] }}
+candidate_master=0
+no_master=1{% endfor %}
+
+# slaves are all candidate masters by default
+{% for host in groups['mysqlslaves'] %}
+[server{{ host }}]
+hostname={{ hostvars[host]['ansible_default_ipv4']['address'] }}
+candidate_master=1{% endfor %}
+

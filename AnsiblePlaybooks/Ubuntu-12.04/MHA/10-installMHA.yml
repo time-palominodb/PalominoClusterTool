@@ -27,3 +27,12 @@
       - mha4mysql-node_0.53_all.deb
       - mha4mysql-manager_0.53_all.deb
 
+   - name: create MHA root directory
+     action: file state=directory dest=$mha_log_directory owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser
+
+   - name: create MHA config directory
+     action: file state=directory dest=$mha_config_directory owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser
+
+   - name: create MHA script directory
+     action: file state=directory dest=$mha_home_directory owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser
+

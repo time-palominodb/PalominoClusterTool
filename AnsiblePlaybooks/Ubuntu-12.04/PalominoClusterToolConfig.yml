@@ -1,5 +1,36 @@
 ---
 # these are configurations specific to your environment
 #
-# example: value
+# it appears you can't use $var['key1']['key2'] inside playbooks, only in
+# templates, but i need things to match between playbooks and templates, so
+# i must use $var_key1_key2 instead
+
+# do this right now:
+#   cd /tmp ; ssh-keygen -f id_dsa -t dsa -C 'palomino Cluster Tool MHA DSA keypair'
+# press "enter" twice to make the passphrase empty. if you already have a user with a
+# passwordless SSH keypair, specify them here instead. the private key is a named file on
+# the system where you run your Ansible playbooks. the pubkey is the actual ASCII text.
+cluster_sudoUserKeyLocation: /tmp
+cluster_sudoUserPrivateKey: id_dsa
+cluster_sudoUserPublicKey: ssh-dss AAAAB3NzaC1kc3MAAACBAPoWp0Hu9Vr89tXC4PIwPG00pkDCD2eTmp93pkJSAs536VipQrnc8RHRlsGsaHkKuN9ITQf25lmeeYVyOEhbdUyCSfDW5otbQlGcyFknj+lwxGd1hDvLD9da+rykpetWB/N0+6lI3aTvpaEeOABllZHYJK5/vt13AEJ4tbXdqjxPAAAAFQCZa02pMoNrrTLoMZJ5oG5KV4KGsQAAAIEAo5rgjXt+NDCgcpsYUw3O2MUhOwH+CoGnKEfGi/sTMhAW5AqZaOVV1yvkXBa/taP3w611L7yAGJhjY47tgbwe8ZTlVki1Eqae7RIlcMp5dSLDFWWijS9fUodFbOFbphdRQlEndeOYO9zFHv0kqUNO5SORQgai8jDIkaIxvsyhavQAAACAD2UX2sskUw8HqJh0tdRYkdy4PZBernMsbQYQh0v4syRzw8NceEh2s5FVHJuB9HdPwTrArHMezfi5SeEyHOjjrkzOJJEph/3GHcJ5r1lOmaPig5KCC7HrRorAi0RjQ1P8WfOknG86PqxIDOXEqz1urAcPWq0W6806RueB7yYY4gM= palomino Cluster Tool MHA DSA keypair
+
+# MHA needs this
+cluster_passwordlessSudoUser: ubuntu
+
+# these directories will be created
+mha_log_directory: /var/log/mha
+mha_config_directory: /etc/mha
+mha_home_directory: /opt/mha
+
+# MHA uses these
+mysql_repl_user: repl
+mysql_repl_password: CHANGEME_palominoReplPassword
+mysql_root_user: root
+mysql_root_password: CHANGEME_palominoRootPassword
+
+# only MHA uses this - to change it also for MySQL, you must edit
+# the variable files in the MySQL playbook directories. recommendation
+# is NOT to change this location. use symlinks if you must store the
+# files in another physical location
+mysql_log_dir: /var/log/mysql
 
