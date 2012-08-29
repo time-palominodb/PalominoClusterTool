@@ -64,7 +64,7 @@ ansible-playbook $ansibleFlags ./BaseSaneSystem/setup.yml
 # MySQL Master and Slaves on database nodes
 echo ""
 echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbook. ========================"
-for i in `ls -1 ./MySQLMasterSlaves/??-*.yml` ; do
+for i in `ls -1 ./MySQLMasterSlaves/playbooks/*.yml` ; do
 	echo "   - `date` :: $i"
 	ansible-playbook $ansibleFlags $i
 done
@@ -72,7 +72,7 @@ done
 # MHA on MHA manager and MHA nodes
 echo ""
 echo " - `date` :: $0 Running MHA Ansible Playbook. ========================"
-for i in `ls -1 ./MHA/??-*.yml` ; do
+for i in `ls -1 ./MHA/playbooks/??-*.yml` ; do
 	echo "   - `date` :: $i"
 	ansible-playbook $ansibleFlags $i
 done

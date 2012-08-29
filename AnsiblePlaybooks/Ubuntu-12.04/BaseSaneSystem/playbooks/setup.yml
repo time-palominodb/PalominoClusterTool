@@ -1,0 +1,22 @@
+---
+# just copy some files into place
+- hosts: palominoclusternodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../PalominoClusterToolConfig.yml
+  tasks:
+   - name: Copy script $item onto managed node
+     action: copy src=../files/$item dest=/usr/local/bin/$item mode=0755
+     with_items:
+      - fixAptKeys.sh
+      - fixHostName.pl
+
+   # sources.list should point to only our repo
+   - name: Create /etc/apt/sources.list with only our internal server
+     action: template src=../templates/etc:apt:sources.list dest=/etc/apt/sources.list owner=root
+
+   # uncomment this if you use public repos
+   - name: Ensure apt repo has all missing keys
+     action: command /usr/local/bin/fixAptKeys.sh creates=aptKeysFixed
+

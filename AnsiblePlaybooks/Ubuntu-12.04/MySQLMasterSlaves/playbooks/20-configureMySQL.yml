@@ -1,0 +1,39 @@
+---
+# ensure masters have proper config
+- hosts: mysqlmasters
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../variables-masters.yml
+   - ../../PalominoClusterToolConfig.yml
+  tasks:
+   - name: Setup MySQL Configuration for masters
+     action: template src=../templates/my.cnf dest=/etc/mysql/my.cnf owner=mysql mode=0644
+
+
+# ensure slaves have proper config
+- hosts: mysqlslaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../variables-slaves.yml
+   - ../../PalominoClusterToolConfig.yml
+  tasks:
+   - name: Setup MySQL Configuration for slaves
+     action: template src=../templates/my.cnf dest=/etc/mysql/my.cnf owner=mysql mode=0644
+
+
+# ensure all mysqls have my.cnf proper - there is post-processing
+# for variables that are not at all configured
+- hosts: mysqlmasters:mysqlslaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../PalominoClusterToolConfig.yml
+  tasks:
+   - name: Post-process MySQL Configuration
+     action: command /usr/local/bin/fixMySQLconfig.pl /etc/mysql/my.cnf
+
+   - name: Bounce mysqld - TODO - Convert to handler only do if my.cnf changed
+     action: service name=mysql state=restarted
+

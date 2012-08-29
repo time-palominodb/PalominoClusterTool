@@ -1,14 +1,15 @@
 ---
-# create a replication user on the master for the slaves
-# to connect to
-- hosts: mysqlmasters
+# create a replication user on the master for the slaves to connect to - and
+# also on slaves because they need to be able replicate from each other in case
+# of master failover
+- hosts: mysqlmasters:mysqlslaves
   user: ubuntu
   sudo: True
   vars_files:
-   - ../PalominoClusterToolConfig.yml
+   - ../../PalominoClusterToolConfig.yml
   tasks:
    - name: create replication user on masters
-     action: shell echo "grant replication slave on *.* to "${repl_user}"@'%' identified by '"${repl_password}"';" | mysql -uroot
+     action: mysql_user name=$repl_user  password=$repl_password  host=%  priv='*.*:replication slave'
 
 
 # execute a CHANGE MASTER on all slaves
@@ -16,7 +17,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../PalominoClusterToolConfig.yml
+   - ../../PalominoClusterToolConfig.yml
   tasks:
    - name: slave all slaves to the master
      action: shell creates=/var/run/palominoReplicationTopologySet.ansible /usr/local/bin/generateChangeMasterSQL.pl ${master_host} ${repl_user} ${repl_password} | mysql -uroot > /var/run/palominoReplicationTopologySet.ansible 2>&1

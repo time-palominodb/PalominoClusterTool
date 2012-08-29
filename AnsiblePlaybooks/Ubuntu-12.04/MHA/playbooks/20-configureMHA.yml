@@ -4,10 +4,10 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../PalominoClusterToolConfig.yml
+   - ../../PalominoClusterToolConfig.yml
   tasks:
    - name: install MHA configuration template
-     action: template src=templates/etc:mha:palominoClusterTool.cnf dest=$mha_config_directory/palominoClusterTool.cnf owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser mode=0644
+     action: template src=../templates/etc:mha:palominoClusterTool.cnf dest=$mha_config_directory/palominoClusterTool.cnf owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser mode=0644
 
    - name: privkey of user who can SSH around at will
      action: copy src=$cluster_sudoUserKeyLocation/$cluster_sudoUserPrivateKey dest=/home/$cluster_passwordlessSudoUser/.ssh/$cluster_sudoUserPrivateKey mode=0600 owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser
@@ -15,13 +15,16 @@
    - name: pubkey of user who can SSH around at will
      action: authorized_key user=$cluster_passwordlessSudoUser key="$cluster_sudoUserPublicKey"
 
+
 # setup MySQL to let MHA connect
 - hosts: mhanodes
   user: ubuntu
   sudo: True
   vars_files:
-   - ../PalominoClusterToolConfig.yml
+   - ../../PalominoClusterToolConfig.yml
   tasks:
-   - name: grant root user access to MHA manager node - what is that node? FIXME:'%' for now
-     action: command /usr/bin/mysql -e "grant all on *.* to $mysql_root_user@'%' identified by '$mysql_root_password'"
+   # this will replicate to all slaves of masters - if it is run on the slaves, it will
+   # break replication when the already-existing user is attempted to create again.
+   - name: grant root user access to MHA manager node - what is that node? FIXME.'%' for now
+     action: mysql_user name=$mysql_root_user  password=$mysql_root_password  host=%  priv=*.*:ALL
 

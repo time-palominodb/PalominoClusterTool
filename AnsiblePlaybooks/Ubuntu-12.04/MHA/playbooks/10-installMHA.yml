@@ -5,7 +5,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../PalominoClusterToolConfig.yml
+   - ../../PalominoClusterToolConfig.yml
   tasks:
    - name: install MHA dependencies on MHA manager
      action: apt name=$item state=installed
@@ -16,7 +16,7 @@
       - libparallel-forkmanager-perl
 
    - name: download MHA software
-     action: command creates=/tmp/$item /usr/bin/curl http://mysql-master-ha.googlecode.com/files/$item -o /tmp/$item
+     action: get_url url=http://mysql-master-ha.googlecode.com/files/$item dest=/tmp/$item
      with_items:
       - mha4mysql-node_0.53_all.deb
       - mha4mysql-manager_0.53_all.deb

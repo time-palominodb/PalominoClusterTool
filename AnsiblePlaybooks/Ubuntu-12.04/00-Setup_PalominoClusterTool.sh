@@ -40,7 +40,8 @@ if [ $palominoAnsible -eq 0 ] ; then
 fi
 
 echo ""
-echo " o Next step: edit PalominoClusterToolConfig.yml."
+echo " o Next step: edit PalominoClusterToolConfig.yml. Be sure you follow the instructions"
+echo "   to create the SSH keypair for MHA."
 echo ""
 echo ' o You may also want to edit MySQLMasterSlaves/variables-[masters|slaves].yml'
 echo '   to match your chosen hardware config.'
