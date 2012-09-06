@@ -36,6 +36,13 @@ if [ $mysqlslaves -ne 1 ] ; then
 fi
 
 
+# make sure we can read the MHA KEY
+if [ ! -r /etc/mha/id_dsa ] ; then
+	echo " E Cannot read /etc/mha/id_dsa - give yourself permissions."
+	exit 255
+fi
+
+
 # MHA reconfigures replication topology
 echo " - Checking MHA configuration. You need one MHA manager running on its"
 echo "   own hardware, and MHA nodes running on the DB clients."
