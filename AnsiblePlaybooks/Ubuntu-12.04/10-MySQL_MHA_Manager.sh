@@ -6,16 +6,19 @@ if [ $USER == "root" ] ; then
 	echo "This script does NOT need to be run as root (probably). If you disagree, edit the script"
 	echo "and remove the code that quits when you're root. Exiting abnormally."
 	echo ""
-	echo "Example usage:"
-	echo "$0"
-	echo ""
 	exit 255
 fi
 
-# -f 10 - fork ten processes at a time
-# -v    - verbosity
-ansibleFlags='-f 10'
-ansibleHosts='/etc/ansible/hosts'
+
+# check input is a clusterName
+clusterName=$1
+if [ "xxx$clusterName" == "xxx" ] ; then
+	echo " - Usage: $0 <clusterName>"
+	clusterName='PalominoTest'
+	echo " - Using a default cluster name of $clusterName"
+fi
+ansibleHosts="/etc/ansible/$clusterName"
+
 
 # Sanity Check Overall Configuration
 
@@ -51,6 +54,11 @@ if [ $mhanodes -ne 1 ] ; then
 	echo "There must be one [mhanodes] section in $ansibleHosts - found $mhanodes"
 	exit 255
 fi
+
+
+# -f 10 - fork ten processes at a time
+# -v    - verbosity
+ansibleFlags="--forks=10 --inventory-file=$ansibleHosts"
 
 
 # copy in common scripts, packages, make common configuration changes, etc

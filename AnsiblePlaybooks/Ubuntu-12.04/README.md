@@ -14,20 +14,19 @@ Steps to Set Up MySQL + MHA
    1. Install the python-mysqldb module ("apt-get install python-mysqldb") on your
       management host. (This step may not be necessary)
    1. Symlink PalominoClusterToolLayout.ini to the INI file of the cluster type
-      you want to build.
+      you want to build. The INI file is formatted as an Ansible infentory file
+      and will be copied into /etc/ansible.
    1. Allocate some servers. Database servers should have at least 1.5GB of RAM.
       Do not use t1.micro if you're building EC2 clusters!
    1. Edit PalominoClusterToolLayout.ini and put in your list of servers.
-   1. Run 00-Setup_PalominoClusterTool.sh to prepare your workstation to build the
-      distributed cluster.
+   1. As a user with sudo access, run 00-Setup_PalominoClusterTool.sh to
+      prepare your workstation to build the distributed cluster.
    1. Edit MySQLMasterSlaves/variables-masters.yml and set the MySQL variables
       according to how you'd like. The files have comments to help you decide
       if you're not a guru MySQL DBA.
    1. Edit MySQLMasterSlaves/variables-slaves.yml to set the MySQL slave
       variables similarly to the master. Your slaves are probably of a different
       class of hardware than the master.
-   1. As a user with sudo access, run 00-Setup_PalominoClusterTool.sh (but not
-      necessarily as root).  
    1. Modify values in the PalominoClusterToolConfig.yml to match your hardware.
    1. As a non-root user (with Ansible master access), run 10-MySQL_MHA_Manager.sh.
 

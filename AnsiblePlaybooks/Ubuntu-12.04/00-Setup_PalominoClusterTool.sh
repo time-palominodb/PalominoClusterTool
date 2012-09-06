@@ -18,17 +18,28 @@
 ## echo "   edit BaseSaneSystem/templates/etc:apt:sources.list and add your sources there."
 ## echo ""
 
-echo " - Configuring Ansible hosts"
+# check input is a clusterName
+clusterName=$1
+if [ "xxx$clusterName" == "xxx" ] ; then
+	echo " - Usage: $0 <clusterName>"
+	clusterName='PalominoTest'
+	echo " - Using a default cluster name of $clusterName"
+fi
+ansibleHosts="/etc/ansible/$clusterName"
 
+
+# setup the Ansible inventory
+echo " - Configuring Ansible Inventory"
 layoutFile='PalominoClusterToolLayout.ini'
 if [ ! -e $layoutFile ] ; then
 	echo ""
-	echo "ERROR: Copy a PalominoClusterToolTemplate file to $layoutFile, edit it, re-run this script."
+	echo "ERROR: Symlink a PalominoClusterToolTemplate file to $layoutFile, edit it, re-run this script."
 	exit 255
 fi
-palominoAnsible=`grep -c PalominoClusterTool /etc/ansible/hosts`
-if [ $palominoAnsible -eq 0 ] ; then
-	sudo cat $layoutFile >> /etc/ansible/hosts || echo " E Failed to create /etc/ansible/hosts."
+if [ ! -e $ansibleHosts ] ; then
+	sudo cp $layoutFile $ansibleHosts || echo " E Failed to create $ansibleHosts."
+else
+	echo " - Not overwriting $ansibleHosts - if you need to make changes, remove the file first."
 fi
 
 
