@@ -47,11 +47,11 @@
    # dbconfig.php has username/password
    # $DB["USER"] = $mysql_Zabbix_user
    - name: give zabbix db username
-     action: lineinfile name=/etc/zabbix/dbconfig.php regexp=^$DB["USER"] line='$DB["USER"] = "$mysql_Zabbix_user"'
+     action: lineinfile name=/etc/zabbix/dbconfig.php regexp='^\$DB\[\"USER\"\]' line='$DB["USER"] = "$mysql_Zabbix_user";'
 
    # $DB["PASSWORD"] = $mysql_Zabbix_password
    - name: give zabbix db password
-     action: lineinfile name=/etc/zabbix/dbconfig.php regexp=^$DB["PASSWORD"] line='$DB["PASSWORD"] = "$mysql_Zabbix_password"'
+     action: lineinfile name=/etc/zabbix/dbconfig.php regexp='^\$DB\[\"PASSWORD\"\]' line='$DB["PASSWORD"] = "$mysql_Zabbix_password";'
 
 
 # install Zabbix agents across the monitored cluster
