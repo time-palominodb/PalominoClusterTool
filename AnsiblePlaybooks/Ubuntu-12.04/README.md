@@ -12,8 +12,9 @@ Steps to Set Up MySQL + MHA
    1. Install the python-mysqldb module ("apt-get install python-mysqldb") on your
       Ansible control host.
    1. Symlink PalominoClusterToolLayout.ini to the cluster type you want to build.
-   1. Edit PalominoClusterToolLayout.ini and put in your list of servers. Copy
-      the result into /etc/ansible/hosts.
+   1. Edit PalominoClusterToolLayout.ini and put in your list of servers.
+   1. Run 00-Setup_PalominoClusterTool.sh to prepare your workstation to build the
+      distributed cluster.
    1. Edit MySQLMasterSlaves/variables-masters.yml and set the MySQL variables
       according to how you'd like. The files have comments to help you decide
       if you're not a guru MySQL DBA.

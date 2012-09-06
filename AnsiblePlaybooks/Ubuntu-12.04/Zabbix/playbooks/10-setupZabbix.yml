@@ -1,0 +1,69 @@
+---
+# install Zabbix software
+- hosts: alertmaster:trendmaster
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../PalominoClusterToolConfig.yml
+  tasks:
+   - name: install zabbix server on trendmaster
+     action: apt name=$item state=installed
+     with_items:
+      - zabbix-server-mysql
+      - zabbix-frontend-php
+
+   - name: install mysqld on trendmaster for Zabbix
+     action: apt name=$item state=installed
+     with_items:
+      - mysql-server
+      - python-mysqldb
+      - libdbd-mysql-perl
+      - libdbi-perl
+
+   # make zabbix database locally
+   - name: make zabbix database for zabbix metadata
+     action: shell creates=/var/run/zabbixDatabaseCreated mysql -uroot -e "create database zabbix" && touch /var/run/zabbixDatabaseCreated
+
+   # give mysql access to Zabbix user
+   - name: give zabbix user mysqld access on trendmaster
+     action: mysql_user name=$mysql_Zabbix_user  password=$mysql_Zabbix_password  host=localhost  priv='zabbix.*:all'
+
+   # put zabbix schema into local mysqld
+   - name: create zabbix schema
+     action: shell creates=/var/run/zabbixSchemaCreated cat /usr/share/zabbix-server/mysql.sql | mysql -u$mysql_Zabbix_user -p$mysql_Zabbix_password zabbix && touch /var/run/zabbixSchemaCreated
+
+   # put zabbix data into local mysqld
+   - name: create zabbix data
+     action: shell creates=/var/run/zabbixDataCreated cat /usr/share/zabbix-server/data.sql | mysql -u$mysql_Zabbix_user -p$mysql_Zabbix_password zabbix && touch /var/run/zabbixDataCreated
+
+   # zabbix_server.conf has a username/password
+   - name: give zabbix_server.conf proper zabbix username for mysql
+     action: lineinfile name=/etc/zabbix/zabbix_server.conf regexp=^DBUser= line='DBUser=$mysql_Zabbix_user'
+
+   # zabbix_server.conf has a username/password
+   - name: give zabbix_server.conf proper zabbix password for mysql
+     action: lineinfile name=/etc/zabbix/zabbix_server.conf regexp=^DBPassword= line='DBPassword=$mysql_Zabbix_password'
+
+   # dbconfig.php has username/password
+   # $DB["USER"] = $mysql_Zabbix_user
+   - name: give zabbix db username
+     action: lineinfile name=/etc/zabbix/dbconfig.php regexp=^$DB["USER"] line='$DB["USER"] = "$mysql_Zabbix_user"'
+
+   # $DB["PASSWORD"] = $mysql_Zabbix_password
+   - name: give zabbix db password
+     action: lineinfile name=/etc/zabbix/dbconfig.php regexp=^$DB["PASSWORD"] line='$DB["PASSWORD"] = "$mysql_Zabbix_password"'
+
+
+# install Zabbix agents across the monitored cluster
+- hosts: palominoclusternodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../PalominoClusterToolConfig.yml
+  tasks:
+   - name: install zabbix agents on the database cluster
+     action: apt name=$item state=installed
+     with_items:
+      - zabbix-agent
+      - zabbix-proxy-mysql
+

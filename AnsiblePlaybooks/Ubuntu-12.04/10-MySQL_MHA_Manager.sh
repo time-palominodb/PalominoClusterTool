@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: Convert this to a playbook as well. Ansible supports playbooks-of-playbooks
+
 if [ $USER == "root" ] ; then
 	echo "This script does NOT need to be run as root (probably). If you disagree, edit the script"
 	echo "and remove the code that quits when you're root. Exiting abnormally."
@@ -33,16 +35,6 @@ if [ $mysqlslaves -ne 1 ] ; then
 	exit 255
 fi
 
-# for setting up clusters, we currently only support HAproxy on every DB client
-# node, not a central load balancer - if you've configured your own central
-# load balancer, have these HAproxy be simple pass-through to that LB
-echo " - Checking HAproxy configuration. You should have a load balancer"
-echo "   defined on every DB client node."
-haproxynodes=`fgrep -c '[haproxynodes' $ansibleHosts`
-if [ $haproxynodes -ne 1 ] ; then
-	echo "There must be one [haproxynodes] section in $ansibleHosts - found $haproxynodes"
-	exit 255
-fi
 
 # MHA reconfigures replication topology
 echo " - Checking MHA configuration. You need one MHA manager running on its"
@@ -54,16 +46,15 @@ if [ $mhanodes -ne 1 ] ; then
 fi
 
 
-# Zero: Make all remote systems sane - copy in common scripts, packages,
-# make common configuration changes, etc
+# copy in common scripts, packages, make common configuration changes, etc
 echo ""
-echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbook. ========================"
-ansible-playbook $ansibleFlags ./BaseSaneSystem/setup.yml
+echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbooks. ========================"
+ansible-playbook $ansibleFlags ./BaseSaneSystem/playbooks/setup.yml
 
 
 # MySQL Master and Slaves on database nodes
 echo ""
-echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbook. ========================"
+echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbooks. ========================"
 for i in `ls -1 ./MySQLMasterSlaves/playbooks/*.yml` ; do
 	echo "   - `date` :: $i"
 	ansible-playbook $ansibleFlags $i
@@ -71,7 +62,7 @@ done
 
 # MHA on MHA manager and MHA nodes
 echo ""
-echo " - `date` :: $0 Running MHA Ansible Playbook. ========================"
+echo " - `date` :: $0 Running MHA Ansible Playbooks. ========================"
 for i in `ls -1 ./MHA/playbooks/??-*.yml` ; do
 	echo "   - `date` :: $i"
 	ansible-playbook $ansibleFlags $i
@@ -79,6 +70,17 @@ done
 
 # HAproxy on the database client nodes
 echo ""
-echo " - `date` :: $0 Running HAproxy Ansible Playbook. ========================"
-ansible-playbook $ansibleFlags ./HAProxy/setup.yml
+echo " - `date` :: $0 Running HAproxy Ansible Playbooks. ========================"
+for i in `ls -1 ./HAProxy/playbooks/??-*.yml` ; do
+	echo "   - `date` :: $i"
+	ansible-playbook $ansibleFlags $i
+done
+
+# Trending and Alerting
+echo ""
+echo " - `date` :: $0 Running Zabbix Ansible Playbooks. ========================"
+for i in `ls -1 ./Zabbix/playbooks/??-*.yml` ; do
+	echo "   - `date` :: $i"
+	ansible-playbook $ansibleFlags $i
+done
 

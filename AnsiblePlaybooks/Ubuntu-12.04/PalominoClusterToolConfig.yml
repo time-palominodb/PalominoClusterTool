@@ -30,6 +30,14 @@ mysql_repl_password: CHANGEME_palominoReplPassword
 mysql_root_user: root
 mysql_root_password: CHANGEME_palominoRootPassword
 
+# Zabbix, Cacti, Nagios use these
+mysql_Zabbix_user: monitorZabbix
+mysql_Zabbix_password: CHANGEME_palominoMonZabbixPassword
+mysql_Cacti_user: monitorCacti
+mysql_Cacti_password: CHANGEME_palominoMonCactiPassword
+mysql_Nagios_user: monitorNagios
+mysql_Nagios_password: CHANGEME_palominoMonNagiosPassword
+
 # only MHA uses this - to change it also for MySQL, you must edit
 # the variable files in the MySQL playbook directories. recommendation
 # is NOT to change this location. use symlinks if you must store the

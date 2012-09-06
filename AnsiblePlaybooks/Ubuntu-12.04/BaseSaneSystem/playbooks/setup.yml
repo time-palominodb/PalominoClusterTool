@@ -20,3 +20,7 @@
    - name: Ensure apt repo has all missing keys
      action: command /usr/local/bin/fixAptKeys.sh creates=aptKeysFixed
 
+   # do apt-get update across the cluster - so subsequent playbooks don't have to
+   - name: do apt-get update across the cluster
+     action: command /usr/bin/apt-get update
+

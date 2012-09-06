@@ -1,0 +1,16 @@
+---
+- hosts: mysqlmasters:mysqlslaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../PalominoClusterToolConfig.yml
+  tasks:
+   - name: create Zabbix user on databases
+     action: mysql_user name=$mysql_Zabbix_user  password=$mysql_Zabbix_password  host=%  priv='*.*:super,process'
+
+   - name: create Cacti user on databases
+     action: mysql_user name=$mysql_Cacti_user  password=$mysql_Cacti_password  host=%  priv='*.*:super,process'
+
+   - name: create Nagios user on databases
+     action: mysql_user name=$mysql_Nagios_user  password=$mysql_Nagios_password  host=%  priv='*.*:super,process'
+
