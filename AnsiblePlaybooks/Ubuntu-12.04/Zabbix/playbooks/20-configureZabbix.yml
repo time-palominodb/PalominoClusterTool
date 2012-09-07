@@ -1,0 +1,11 @@
+---
+# configure Zabbix agents across the monitored cluster
+- hosts: palominoclusternodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../PalominoClusterToolConfig.yml
+  tasks:
+   - name: configure zabbix agents to talk to server
+     action: lineinfile name=/etc/zabbix/zabbix_agentd.conf regexp='^Server=' line='Server=$trendmaster'
+

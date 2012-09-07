@@ -25,7 +25,7 @@ if [ "xxx$clusterName" == "xxx" ] ; then
 	clusterName='PalominoTest'
 	echo " - Using a default cluster name of $clusterName"
 fi
-ansibleHosts="/etc/ansible/$clusterName"
+ansibleHosts="/etc/ansible/$clusterName.ini"
 
 
 # setup the Ansible inventory
