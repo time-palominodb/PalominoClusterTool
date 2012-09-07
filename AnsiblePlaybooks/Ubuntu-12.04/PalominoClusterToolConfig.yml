@@ -1,19 +1,15 @@
 ---
 # these are configurations specific to your environment
 #
-# it appears you can't use $var['key1']['key2'] inside playbooks, only in
-# templates, but i need things to match between playbooks and templates, so
-# i must use $var_key1_key2 instead
-
-# do this right now on your Ansible master host:
-#   sudo mkdir /etc/mha ; cd /etc/mha ; sudo ssh-keygen -f id_dsa -t dsa -C 'palomino Cluster Tool MHA DSA keypair'
-# press "enter" twice to make the passphrase empty. if you already have a user with a
-# passwordless SSH keypair, specify them here instead. the private key is a named file on
-# the system where you run your Ansible playbooks. the pubkey is the actual ASCII text
-# which you can get by doing:
-#   cat /etc/mha/id_dsa.pub
-cluster_sudoUserKeyLocation: /etc/mha
-cluster_sudoUserPrivateKey: id_dsa
+# passwordless SSH keypair, specify here.
+#
+# the private key is a file on your filesystem..
+#
+# the pubkey is the actual ASCII text which you can get by doing:
+#   cat /etc/mha/PalominoTest/id_dsa.pub
+# If you're naming your cluster something besides PalominoTest, it should exist
+# as /etc/mha/<clusterName>/id_dsa.pub
+cluster_sudoUserPrivateKey: /etc/mha/PalominoTest/id_dsa
 cluster_sudoUserPublicKey: ssh-dss AAAAB3NzaC1kc3MAAACBAPbiXbdgWg5n5O/YbwwTbpZ53DdV4tljvl/vi3m/BmqYeOeFALuYkTuEcE9bpnSJ+ABsX8y8iirbAs5RKVwv3cyJfEdAhfmAxpxrfG/2oerwoV0wMlwViUahqnBuN1A2/OLnJ1WjFUTEVWoWSfnaNcvJ14uARXpxx+x68YZxS5yPAAAAFQCji6J4+4pWWp6tYv2M6BKXD2wzCwAAAIAd+J7J8H8ev5PX9KvQ4sfQtv1uakCs3JPDG2x+civrEbutbOfcT/hCZUWjOPju1y5As2nbWFl6Ut/RYNJk3mhNh9IEArE1SJstG8G2y/K0QIlr07LCB8KJvTWDLb9mMn2PW3znSQURyfEmjE/PA3kyQQLeZMh0JSBHI3rRR2E8fQAAAIByLjj4S7uc1lh098YSetCeMp4WntosGbMi4je86kB4xctoWUWzCyH8+HlYvcnDjQ6aGXl5uB2XyOAoNOd/+oBFrn2IjJyMNYYgXy+WZXVtuHA8M94QB58fhnsvJpHADjkZoBWEWvZFK/eXAwBs7ZD6HKwLMPYn6WnIBACIrPETzg== palomino Cluster Tool MHA DSA keypair
 
 # MHA needs this

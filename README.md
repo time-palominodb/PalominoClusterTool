@@ -62,7 +62,8 @@ setting up clusters of MySQL, HBase, Cassandra, MongoDB, or other distributed
 database systems, please contact us! We'd love to hear about it and welcome
 your participation in the project.
 
-   * Tim Ellis, CTO PalominoDB - Ansible Playbooks
+   * Tim Ellis, CTO & Principal Architect, Palomino
+   * Charlie Killian, Director of Engineering, Palomino
 
 
 License

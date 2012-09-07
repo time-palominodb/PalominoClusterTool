@@ -44,13 +44,25 @@ fi
 
 
 # generate SSH keypair for MHA to use
-if [ ! -e /etc/mha/id_dsa ] ; then
-	echo " - Generating an SSH keypair - do not type a passphrase, just press ENTER twice if prompted"
+if [ ! -e /etc/mha/$clusterName/id_dsa ] ; then
+	echo " - Generating an SSH keypair - do not enter passphrase, press ENTER twice if prompted"
 
-	sudo mkdir -p /etc/mha \
-	&& sudo chown -R $USER: /etc/mha \
-	&& cd /etc/mha \
+	sudo mkdir -p /etc/mha/$clusterName \
+	&& sudo chown -R $USER: /etc/mha/$clusterName \
+	&& cd /etc/mha/$clusterName \
 	&& ssh-keygen -t dsa -f id_dsa >/dev/null
+fi
+
+
+# sanity check keypair matches
+configVariablePubKeyHash=`fgrep cluster_sudoUserPublicKey PalominoClusterToolConfig.yml | awk '{print $2 $3}' | md5sum`
+etcMhaPubKeyHash=`cat /etc/mha/$clusterName/id_dsa.pub | awk '{print $1 $2 }' | md5sum`
+if [ $configVariablePubKeyHash == $etcMhaPubKeyHash ] ; then
+	echo " - Configuration pubkey and /etc/mha/$clusterName/id_dsa.pub match. Good."
+else
+	echo " E Configuration pubkey and /etc/mha/$clusterName/id_dsa.pub mismatch. Bad."
+	echo " E You need to edit PalominoClusterToolConfig.yml and match it with the generated SSH keypair."
+	exit 255
 fi
 
 

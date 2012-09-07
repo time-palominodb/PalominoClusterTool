@@ -14,7 +14,7 @@ Steps to Set Up MySQL + MHA
    1. Install the python-mysqldb module ("apt-get install python-mysqldb") on your
       management host. (This step may not be necessary)
    1. Symlink PalominoClusterToolLayout.ini to the INI file of the cluster type
-      you want to build. The INI file is formatted as an Ansible infentory file
+      you want to build. The INI file is formatted as an Ansible inventory file
       and will be copied into /etc/ansible.
    1. Allocate some servers. Database servers should have at least 1.5GB of RAM.
       Do not use t1.micro if you're building EC2 clusters!

@@ -27,21 +27,23 @@ ansibleHosts="/etc/ansible/$clusterName"
 # there will be 4 or more slaves to the master
 echo " - Checking master/slaves configuration."
 echo "   You should have one master and at least 2 slaves defined."
-mysqlmasters=`fgrep -c '[mysqlmasters' $ansibleHosts`
-mysqlslaves=`fgrep -c '[mysqlslaves' $ansibleHosts`
+
+mysqlmasters=`awk '/\[.+\]/{m=0};NF && m{t++};/\[mysqlmasters\]/{m=1} END{print t+0}' $ansibleHosts`
+mysqlslaves=`awk '/\[.+\]/{m=0};NF && m{t++};/\[mysqlslaves\]/{m=1} END{print t+0}' $ansibleHosts`
+
 if [ $mysqlmasters -ne 1 ] ; then
-	echo "There must be one [mysqlmasters] section in $ansibleHosts - found $mysqlmasters"
+	echo "There must be one entry in [mysqlmasters] section in $ansibleHosts - found $mysqlmasters"
 	exit 255
 fi
-if [ $mysqlslaves -ne 1 ] ; then
-	echo "There must be one [mysqlslaves] section in $ansibleHosts - found $mysqlslaves"
+if [ $mysqlslaves -lt 2 ] ; then
+	echo "There must be two or more entries in [mysqlslaves] section in $ansibleHosts - found $mysqlslaves"
 	exit 255
 fi
 
 
 # make sure we can read the MHA KEY
-if [ ! -r /etc/mha/id_dsa ] ; then
-	echo " E Cannot read /etc/mha/id_dsa - give yourself permissions."
+if [ ! -r /etc/mha/$clusterName/id_dsa ] ; then
+	echo " E Cannot read /etc/mha/$clusterName/id_dsa - give yourself permissions."
 	exit 255
 fi
 

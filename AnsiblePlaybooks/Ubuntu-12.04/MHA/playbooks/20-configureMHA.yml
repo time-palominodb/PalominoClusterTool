@@ -10,7 +10,7 @@
      action: template src=../templates/etc:mha:palominoClusterTool.cnf dest=$mha_config_directory/palominoClusterTool.cnf owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser mode=0644
 
    - name: privkey of user who can SSH around at will
-     action: copy src=$cluster_sudoUserKeyLocation/$cluster_sudoUserPrivateKey dest=/home/$cluster_passwordlessSudoUser/.ssh/$cluster_sudoUserPrivateKey mode=0600 owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser
+     action: copy src=$cluster_sudoUserPrivateKey dest=/home/$cluster_passwordlessSudoUser/.ssh/$cluster_sudoUserPrivateKey mode=0600 owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser
 
    - name: pubkey of user who can SSH around at will
      action: authorized_key user=$cluster_passwordlessSudoUser key="$cluster_sudoUserPublicKey"
