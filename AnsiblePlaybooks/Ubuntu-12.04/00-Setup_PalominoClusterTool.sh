@@ -47,17 +47,17 @@ fi
 if [ ! -e /etc/mha/$clusterName/id_dsa ] ; then
 	echo " - Generating an SSH keypair - do not enter passphrase, press ENTER twice if prompted"
 
-	sudo mkdir -p /etc/mha/$clusterName \
+	( sudo mkdir -p /etc/mha/$clusterName \
 	&& sudo chown -R $USER: /etc/mha/$clusterName \
 	&& cd /etc/mha/$clusterName \
-	&& ssh-keygen -t dsa -f id_dsa >/dev/null
+	&& ssh-keygen -t dsa -f id_dsa >/dev/null )
 fi
 
 
 # sanity check keypair matches
 configVariablePubKeyHash=`fgrep cluster_sudoUserPublicKey PalominoClusterToolConfig.yml | awk '{print $2 $3}' | md5sum`
 etcMhaPubKeyHash=`cat /etc/mha/$clusterName/id_dsa.pub | awk '{print $1 $2 }' | md5sum`
-if [ $configVariablePubKeyHash == $etcMhaPubKeyHash ] ; then
+if [ "$configVariablePubKeyHash" == "$etcMhaPubKeyHash" ] ; then
 	echo " - Configuration pubkey and /etc/mha/$clusterName/id_dsa.pub match. Good."
 else
 	echo " E Configuration pubkey and /etc/mha/$clusterName/id_dsa.pub mismatch. Bad."
