@@ -85,14 +85,6 @@ for i in `ls -1 ./MHA/playbooks/??-*.yml` ; do
 	ansible-playbook $ansibleFlags $i
 done
 
-# HAproxy on the database client nodes
-echo ""
-echo " - `date` :: $0 Running HAproxy Ansible Playbooks. ========================"
-for i in `ls -1 ./HAProxy/playbooks/??-*.yml` ; do
-	echo "   - `date` :: $i"
-	ansible-playbook $ansibleFlags $i
-done
-
 # Trending and Alerting
 echo ""
 echo " - `date` :: $0 Running Zabbix Ansible Playbooks. ========================"
