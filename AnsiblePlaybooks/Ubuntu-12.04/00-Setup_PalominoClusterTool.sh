@@ -53,6 +53,19 @@ if [ ! -e /etc/mha/$clusterName/id_dsa ] ; then
 	&& ssh-keygen -t dsa -f id_dsa >/dev/null )
 fi
 
+# if there's a pubkey pair in /etc/mha/<clusterName> already,
+# and the config doesn't have entries for it, use it
+configPubkeyHashCount=`fgrep -c cluster_sudoUserPublicKey PalominoClusterToolConfig.yml`
+if [ $configPubkeyHashCount == 0 ] ; then
+	echo "# passwordless SSH keypair, specify here." >> PalominoClusterToolConfig.yml
+	echo "# the private key is a file on your filesystem.." >> PalominoClusterToolConfig.yml
+	echo "# the pubkey is the actual ASCII text which you can get by doing:" >> PalominoClusterToolConfig.yml
+	echo "#   cat /etc/mha/PalominoTest/id_dsa.pub" >> PalominoClusterToolConfig.yml
+	echo "# If you're naming your cluster something besides PalominoTest, it should exist" >> PalominoClusterToolConfig.yml
+	echo "# as /etc/mha/<clusterName>/id_dsa.pub" >> PalominoClusterToolConfig.yml
+	echo "cluster_sudoUserPrivateKey: /etc/mha/$clusterName/id_dsa" >> PalominoClusterToolConfig.yml
+	echo "cluster_sudoUserPublicKey: `cat /etc/mha/$clusterName/id_dsa.pub`" >> PalominoClusterToolConfig.yml
+fi
 
 # sanity check keypair matches
 configVariablePubKeyHash=`fgrep cluster_sudoUserPublicKey PalominoClusterToolConfig.yml | awk '{print $2 $3}' | md5sum`
