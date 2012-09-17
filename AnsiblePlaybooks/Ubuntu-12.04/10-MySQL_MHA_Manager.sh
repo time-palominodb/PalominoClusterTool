@@ -13,11 +13,19 @@ fi
 # check input is a clusterName
 clusterName=$1
 if [ "xxx$clusterName" == "xxx" ] ; then
-	echo " - Usage: $0 <clusterName>"
-	clusterName='PalominoTest'
-	echo " - Using a default cluster name of $clusterName"
+	echo " E Usage: $0 <clusterName>"
+	echo " E Currently configured clusters:"
+	find /etc/mha -mindepth 1 -type d -printf "%f\n" | awk '{print " - "$_}'
+	exit 255
 fi
 ansibleHosts="/etc/ansible/$clusterName.ini"
+
+
+if [ ! -r $ansibleHosts ] ; then
+	echo " E First you must setup your workstation to build Palomino Cluster Tool!"
+	echo " E Suggestion: read README.md and treat it as a checklist."
+	exit 255
+fi
 
 
 # Sanity Check Overall Configuration
@@ -29,16 +37,10 @@ echo " - Checking master/slaves configuration."
 echo "   You should have one master and at least 2 slaves defined."
 
 mysqlmasters=`awk '/\[.+\]/{m=0};NF && m{t++};/\[mysqlmasters\]/{m=1} END{print t+0}' $ansibleHosts`
-mysqlslaves=`awk '/\[.+\]/{m=0};NF && m{t++};/\[mysqlslaves\]/{m=1} END{print t+0}' $ansibleHosts`
+if [ $mysqlmasters -ne 1 ] ; then echo "There must be one entry in [mysqlmasters] section in $ansibleHosts - found $mysqlmasters" ; exit 255 ; fi
 
-if [ $mysqlmasters -ne 1 ] ; then
-	echo "There must be one entry in [mysqlmasters] section in $ansibleHosts - found $mysqlmasters"
-	exit 255
-fi
-if [ $mysqlslaves -lt 2 ] ; then
-	echo "There must be two or more entries in [mysqlslaves] section in $ansibleHosts - found $mysqlslaves"
-	exit 255
-fi
+mysqlslaves=`awk '/\[.+\]/{m=0};NF && m{t++};/\[mysqlslaves\]/{m=1} END{print t+0}' $ansibleHosts`
+if [ $mysqlslaves -lt 2 ] ; then echo "There must be two or more entries in [mysqlslaves] section in $ansibleHosts - found $mysqlslaves" ; exit 255 ; fi
 
 
 # make sure we can read the MHA KEY
@@ -48,24 +50,18 @@ if [ ! -r /etc/mha/$clusterName/id_dsa ] ; then
 fi
 
 
-# MHA reconfigures replication topology
-echo " - Checking MHA configuration. You need one MHA manager running on its"
-echo "   own hardware, and MHA nodes running on the DB clients."
-mhanodes=`fgrep -c '[mhanodes' $ansibleHosts`
-if [ $mhanodes -ne 1 ] ; then
-	echo "There must be one [mhanodes] section in $ansibleHosts - found $mhanodes"
-	exit 255
-fi
-
-
 # -f 10 - fork ten processes at a time
 # -v    - verbosity
 ansibleFlags="--forks=10 --inventory-file=$ansibleHosts"
 
 
+# create a symlink for playbooks to use - remove at end of run
+ln -sf /etc/palomino/$clusterName/PalominoClusterToolConfig.yml ./currentPalominoConfiguration.yml
+
+
 # copy in common scripts, packages, make common configuration changes, etc
 echo ""
-echo " - `date` :: $0 Running MySQL Masters/Slaves Ansible Playbooks. ========================"
+echo " - `date` :: $0 Running Base Sane System Ansible Playbooks. ========================"
 ansible-playbook $ansibleFlags ./BaseSaneSystem/playbooks/setup.yml
 
 
@@ -85,11 +81,7 @@ for i in `ls -1 ./MHA/playbooks/??-*.yml` ; do
 	ansible-playbook $ansibleFlags $i
 done
 
-# Trending and Alerting
-echo ""
-echo " - `date` :: $0 Running Zabbix Ansible Playbooks. ========================"
-for i in `ls -1 ./Zabbix/playbooks/??-*.yml` ; do
-	echo "   - `date` :: $i"
-	ansible-playbook $ansibleFlags $i
-done
+
+# clean up the temporary symlink
+rm -f ./currentPalominoConfiguration.yml
 

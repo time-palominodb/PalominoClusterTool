@@ -14,12 +14,12 @@ How to Use It
 
    1. Allocate cluster nodes, ensure passwordless SSH user with sudo is
       available to your Management machine.
-   2. Decide your distribution, cluster configuration software, and database
+   1. Decide your distribution, cluster configuration software, and database
       architecture.
-   3. Enter [ConfigManager]/[Distribution] directory, edit INI and YAML files
+   1. Enter [ConfigManager]/[Distribution] directory, edit INI and YAML files
       (this will take the longest time).
-   4. Ask PalominoClusterTool to generate your cluster.
-   5. Join the mailing list and IRC channels to report errors or concerns.
+   1. Ask PalominoClusterTool to generate your cluster.
+   1. Join the mailing list and IRC channels to report errors or concerns.
 
 
 What is it?
@@ -62,6 +62,7 @@ setting up clusters of MySQL, HBase, Cassandra, MongoDB, or other distributed
 database systems, please contact us! We'd love to hear about it and welcome
 your participation in the project.
 
+   * René Cannaò, Senior DBA, Data Architect, Palomino
    * Tim Ellis, CTO & Principal Architect, Palomino
    * Charlie Killian, Director of Engineering, Palomino
 

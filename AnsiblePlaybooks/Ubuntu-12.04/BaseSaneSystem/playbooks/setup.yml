@@ -4,13 +4,12 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Copy script $item onto managed node
      action: copy src=../files/$item dest=/usr/local/bin/$item mode=0755
      with_items:
       - fixAptKeys.sh
-      - fixHostName.pl
 
    # sources.list should point to only our repo
    - name: Create /etc/apt/sources.list with only our internal server

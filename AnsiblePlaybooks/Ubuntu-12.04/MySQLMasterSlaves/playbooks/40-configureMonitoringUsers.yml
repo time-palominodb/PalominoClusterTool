@@ -1,9 +1,10 @@
 ---
-- hosts: mysqlmasters:mysqlslaves
+# this will propogate via replication to the slaves
+- hosts: mysqlmasters
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: create Zabbix user on databases
      action: mysql_user name=$mysql_Zabbix_user  password=$mysql_Zabbix_password  host=%  priv='*.*:super,process'

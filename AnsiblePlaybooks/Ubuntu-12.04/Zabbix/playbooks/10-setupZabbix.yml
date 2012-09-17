@@ -4,7 +4,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: install zabbix server on trendmaster
      action: apt name=$item state=installed
@@ -59,7 +59,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: install zabbix agents on the database cluster
      action: apt name=$item state=installed

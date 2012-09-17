@@ -5,7 +5,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: install MHA dependencies on MHA manager
      action: apt name=$item state=installed

@@ -4,18 +4,20 @@ Steps to Perform for All Cluster Types
    1. Edit BaseSaneSystem/templates/etc:apt:sources.list and put in your
       preferred list of servers to get packages from. If your operations department
       has an Apt repo, put that IP address in the template.
+   1. Ensure Ansible is installed/working on your management host. This has some
+      dependencies of its own. This should take 30 minutes to an hour.
+   1. Symlink PalominoClusterToolLayout.ini to the INI file of the cluster type
+      you want to build. The files are named like
+      "PalominoClusterToolTemplate_<clusterType>.ini". The INI file is formatted as
+      an Ansible inventory file and will be copied into /etc/ansible, but will
+      not overwrite an existing file in that directory.
 
 
 Steps to Set Up MySQL + MHA
 ===========================
 
-   1. Ensure Ansible is installed/working on your management host. This has some
-      dependencies of its own. This should take 30 minutes to an hour.
    1. Install the python-mysqldb module ("apt-get install python-mysqldb") on your
       management host. (This step may not be necessary)
-   1. Symlink PalominoClusterToolLayout.ini to the INI file of the cluster type
-      you want to build. The INI file is formatted as an Ansible inventory file
-      and will be copied into /etc/ansible.
    1. Allocate some servers. Database servers should have at least 1.5GB of RAM.
       Do not use t1.micro if you're building EC2 clusters!
    1. Edit PalominoClusterToolLayout.ini and put in your list of servers.
@@ -27,7 +29,9 @@ Steps to Set Up MySQL + MHA
    1. Edit MySQLMasterSlaves/variables-slaves.yml to set the MySQL slave
       variables similarly to the master. Your slaves are probably of a different
       class of hardware than the master.
-   1. Modify values in the PalominoClusterToolConfig.yml to match your hardware.
+   1. Modify values in the
+     /etc/palomino/<clusterName>/PalominoClusterToolConfig.yml to match your
+     hardware.
    1. As a non-root user (with Ansible master access), run 10-MySQL_MHA_Manager.sh.
 
 Post-Setup Instructions:
@@ -39,6 +43,14 @@ Post-Setup Instructions:
       will have a RED CRITICAL state for this service if you don't start it (or if you
       do start it, but a failover happens).
 
+
+Steps to Set Up Hadoop (HDFS)
+=============================
+
+   1. HBase requires Hadoop as a prerequisite, so simply follow the HBase instructions,
+      but for any HBase-specific items, like installing Zookeeper, HMaster, or RegionServer
+      daemons, don't do those parts. You'll have a functional Hadoop cluster but sans
+      an HBase database on top of it.
 
 Steps to Set Up HBase
 =====================

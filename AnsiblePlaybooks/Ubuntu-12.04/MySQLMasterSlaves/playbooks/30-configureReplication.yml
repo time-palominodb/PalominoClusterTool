@@ -6,7 +6,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: create replication user on masters
      action: mysql_user name=$repl_user  password=$repl_password  host=%  priv='*.*:replication slave'
@@ -17,7 +17,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: slave all slaves to the master
      action: shell creates=/var/run/palominoReplicationTopologySet.ansible /usr/local/bin/generateChangeMasterSQL.pl ${master_host} ${repl_user} ${repl_password} | mysql -uroot > /var/run/palominoReplicationTopologySet.ansible 2>&1

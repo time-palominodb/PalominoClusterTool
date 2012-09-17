@@ -21,11 +21,20 @@
 # check input is a clusterName
 clusterName=$1
 if [ "xxx$clusterName" == "xxx" ] ; then
-	echo " - Usage: $0 <clusterName>"
-	clusterName='PalominoTest'
-	echo " - Using a default cluster name of $clusterName"
+	clusterName='PalominoCluster'
+	echo " W Usage: $0 <clusterName>"
+	echo " W You'll use the same clusterName for subsequent helper scripts"
+	echo " W Continuing with a default clusterName of $clusterName"
 fi
+sudo mkdir -p /etc/ansible
 ansibleHosts="/etc/ansible/$clusterName.ini"
+
+
+# we'll store our modified config files here
+configDir="/etc/palomino/$clusterName"
+configFile="/etc/palomino/$clusterName/PalominoClusterToolConfig.yml"
+sudo mkdir -p $configDir || echo " E Failed to create $configDir directory for configuration files."
+sudo cp PalominoClusterToolConfig.yml $configFile
 
 
 # setup the Ansible inventory
@@ -50,31 +59,35 @@ if [ ! -e /etc/mha/$clusterName/id_dsa ] ; then
 	( sudo mkdir -p /etc/mha/$clusterName \
 	&& sudo chown -R $USER: /etc/mha/$clusterName \
 	&& cd /etc/mha/$clusterName \
-	&& ssh-keygen -t dsa -f id_dsa >/dev/null )
+	&& ssh-keygen -t dsa -f id_dsa -C 'Palomino Cluster Tool Auto-Generated Private/Public Keypair' >/dev/null )
 fi
 
 # if there's a pubkey pair in /etc/mha/<clusterName> already,
 # and the config doesn't have entries for it, use it
-configPubkeyHashCount=`fgrep -c cluster_sudoUserPublicKey PalominoClusterToolConfig.yml`
+configPubkeyHashCount=`fgrep -c cluster_sudoUserPublicKey $configFile`
 if [ $configPubkeyHashCount == 0 ] ; then
-	echo "# passwordless SSH keypair, specify here." >> PalominoClusterToolConfig.yml
-	echo "# the private key is a file on your filesystem.." >> PalominoClusterToolConfig.yml
-	echo "# the pubkey is the actual ASCII text which you can get by doing:" >> PalominoClusterToolConfig.yml
-	echo "#   cat /etc/mha/PalominoTest/id_dsa.pub" >> PalominoClusterToolConfig.yml
-	echo "# If you're naming your cluster something besides PalominoTest, it should exist" >> PalominoClusterToolConfig.yml
-	echo "# as /etc/mha/<clusterName>/id_dsa.pub" >> PalominoClusterToolConfig.yml
-	echo "cluster_sudoUserPrivateKey: /etc/mha/$clusterName/id_dsa" >> PalominoClusterToolConfig.yml
-	echo "cluster_sudoUserPublicKey: `cat /etc/mha/$clusterName/id_dsa.pub`" >> PalominoClusterToolConfig.yml
+	tmpFile="/tmp/config_$clusterName"
+	cp -f $configFile $tmpFile
+	echo "# passwordless SSH keypair, specify here." >> $tmpFile
+	echo "# the private key is a file on your filesystem.." >> $tmpFile
+	echo "# the pubkey is the actual ASCII text which you can get by doing:" >> $tmpFile
+	echo "#   cat /etc/mha/PalominoTest/id_dsa.pub" >> $tmpFile
+	echo "# If you're naming your cluster something besides PalominoTest, it should exist" >> $tmpFile
+	echo "# as /etc/mha/<clusterName>/id_dsa.pub" >> $tmpFile
+	echo "cluster_sudoUserPrivateKey: /etc/mha/$clusterName/id_dsa" >> $tmpFile
+	echo "cluster_sudoUserPublicKey: `cat /etc/mha/$clusterName/id_dsa.pub`" >> $tmpFile
+	sudo cp -f $tmpFile $configFile 
+	sudo rm -f $tmpFile
 fi
 
 # sanity check keypair matches
-configVariablePubKeyHash=`fgrep cluster_sudoUserPublicKey PalominoClusterToolConfig.yml | awk '{print $2 $3}' | md5sum`
+configVariablePubKeyHash=`fgrep cluster_sudoUserPublicKey $configFile | awk '{print $2 $3}' | md5sum`
 etcMhaPubKeyHash=`cat /etc/mha/$clusterName/id_dsa.pub | awk '{print $1 $2 }' | md5sum`
 if [ "$configVariablePubKeyHash" == "$etcMhaPubKeyHash" ] ; then
 	echo " - Configuration pubkey and /etc/mha/$clusterName/id_dsa.pub match. Good."
 else
 	echo " E Configuration pubkey and /etc/mha/$clusterName/id_dsa.pub mismatch. Bad."
-	echo " E You need to edit PalominoClusterToolConfig.yml and match it with the generated SSH keypair."
+	echo " E You need to edit $configFile and match it with the generated SSH keypair in /etc/mha/$clusterName."
 	exit 255
 fi
 

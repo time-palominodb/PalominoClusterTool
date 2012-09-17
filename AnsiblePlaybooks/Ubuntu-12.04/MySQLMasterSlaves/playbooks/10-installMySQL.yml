@@ -4,7 +4,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Copy Configuration postprocessing scripts
      action: copy src=../files/$item dest=/usr/local/bin/$item owner=root mode=0755

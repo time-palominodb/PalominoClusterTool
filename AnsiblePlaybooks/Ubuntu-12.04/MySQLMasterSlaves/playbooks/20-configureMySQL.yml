@@ -1,11 +1,22 @@
 ---
+# ensure mysqls are down before mutzing with their configs
+- hosts: mysqlmasters:mysqlslaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Ensure all MySQLs are down - TODO only shutdown if needed
+     action: service name=mysql state=stopped
+
+
 # ensure masters have proper config
 - hosts: mysqlmasters
   user: ubuntu
   sudo: True
   vars_files:
    - ../variables-masters.yml
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Setup MySQL Configuration for masters
      action: template src=../templates/my.cnf dest=/etc/mysql/my.cnf owner=mysql mode=0644
@@ -17,7 +28,7 @@
   sudo: True
   vars_files:
    - ../variables-slaves.yml
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Setup MySQL Configuration for slaves
      action: template src=../templates/my.cnf dest=/etc/mysql/my.cnf owner=mysql mode=0644
@@ -29,11 +40,16 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Post-process MySQL Configuration
      action: command /usr/local/bin/fixMySQLconfig.pl /etc/mysql/my.cnf
 
-   - name: Bounce mysqld - TODO - Convert to handler only do if my.cnf changed
-     action: service name=mysql state=restarted
+   # we might have changed the innodb log file size, so whack those logs
+   # otherwise mysqld don't come up properly
+   - name: Remove InnoDB logfiles
+     action: command /bin/rm /var/lib/mysql/ib_logfile0 /var/lib/mysql/ib_logfile1
+
+   - name: start mysqld - TODO - Convert to handler only do if my.cnf changed
+     action: service name=mysql state=started
 

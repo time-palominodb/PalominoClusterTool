@@ -4,7 +4,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    - name: install MHA configuration template
      action: template src=../templates/etc:mha:palominoClusterTool.cnf dest=$mha_config_directory/palominoClusterTool.cnf owner=$cluster_passwordlessSudoUser group=$cluster_passwordlessSudoUser mode=0644
@@ -21,7 +21,7 @@
   user: ubuntu
   sudo: True
   vars_files:
-   - ../../PalominoClusterToolConfig.yml
+   - ../../currentPalominoConfiguration.yml
   tasks:
    # this will replicate to all slaves of masters - if it is run on the slaves, it will
    # break replication when the already-existing user is attempted to create again.
