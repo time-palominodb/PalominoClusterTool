@@ -1,0 +1,14 @@
+---
+# install collectd across the monitored cluster
+- hosts: palominoclusternodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: install collectd on the database cluster
+     action: apt name=$item state=installed
+     with_items:
+      - collectd
+      - collectd-utils
+

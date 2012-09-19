@@ -1,5 +1,6 @@
 ---
-# this will propogate via replication to the slaves
+# this will propogate via replication to the slaves - hence we only
+# do it on mysqlmasters
 - hosts: mysqlmasters
   user: ubuntu
   sudo: True
@@ -15,3 +16,8 @@
    - name: create Nagios user on databases
      action: mysql_user name=$mysql_Nagios_user  password=$mysql_Nagios_password  host=%  priv='*.*:super,process'
 
+   - name: create read user on databases
+     action: mysql_user name=$mysql_read_user  password=$mysql_read_password  host=%  priv='*.*:select'
+
+   - name: create write user on databases
+     action: mysql_user name=$mysql_write_user  password=$mysql_write_password  host=%  priv='*.*:select,insert,update,delete,references,create temporary tables,lock tables,execute'

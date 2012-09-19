@@ -13,6 +13,7 @@
       - fixMySQLulimits.pl
       - generateChangeMasterSQL.pl
 
+   # pigz needed by Jetpants
    - name: Install MysQL and connector libraries - force/update_cache are on-purpose
      action: apt name=$item state=installed force=yes update_cache=yes
      with_items:
@@ -20,6 +21,7 @@
       - python-mysqldb
       - libdbd-mysql-perl
       - libdbi-perl
+      - pigz
 
    - name: Give MySQL user proper limits
      action: command /usr/local/bin/fixMySQLulimits.pl /etc/security/limits.conf /etc/pam.d/common-session

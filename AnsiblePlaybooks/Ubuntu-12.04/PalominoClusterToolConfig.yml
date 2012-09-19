@@ -9,6 +9,12 @@ mha_log_directory: /var/log/mha
 mha_config_directory: /etc/mha
 mha_home_directory: /opt/mha
 
+# Your app uses these (and Jetpants is configured thusly)
+mysql_read_user: palominoAppRead
+mysql_read_password: CHANGEME_palominoReadPassword
+mysql_write_user: palominoAppWrite
+mysql_write_password: CHANGEME_palominoWritePassword
+
 # MHA uses these
 mysql_repl_user: repl
 mysql_repl_password: CHANGEME_palominoReplPassword

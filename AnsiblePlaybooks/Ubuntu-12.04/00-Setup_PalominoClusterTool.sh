@@ -34,6 +34,7 @@ ansibleHosts="/etc/ansible/$clusterName.ini"
 configDir="/etc/palomino/$clusterName"
 configFile="/etc/palomino/$clusterName/PalominoClusterToolConfig.yml"
 sudo mkdir -p $configDir || echo " E Failed to create $configDir directory for configuration files."
+echo " - Writing ./PalominoClusterToolConfig.yml into $configFile"
 sudo cp PalominoClusterToolConfig.yml $configFile
 
 
@@ -66,6 +67,7 @@ fi
 # and the config doesn't have entries for it, use it
 configPubkeyHashCount=`fgrep -c cluster_sudoUserPublicKey $configFile`
 if [ $configPubkeyHashCount == 0 ] ; then
+	echo " - Placing cluster_sudoUser keypair information into $configFile"
 	tmpFile="/tmp/config_$clusterName"
 	cp -f $configFile $tmpFile
 	echo "# passwordless SSH keypair, specify here." >> $tmpFile
@@ -92,7 +94,8 @@ else
 fi
 
 
-echo "Done."
+echo ""
+echo " ----- Done."
 echo ""
 echo ' o You may also want to edit MySQLMasterSlaves/variables-[masters|slaves].yml'
 echo '   to match your chosen hardware config.'

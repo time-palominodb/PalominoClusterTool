@@ -1,0 +1,11 @@
+---
+# configure collectd across the monitored cluster
+- hosts: palominoclusternodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: configure collectd plugins to talk to server
+     action: lineinfile name=/etc/collectd/collectd.conf regexp='^Server=' line='Server=$trendmaster'
+
