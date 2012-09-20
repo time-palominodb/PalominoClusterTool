@@ -2,6 +2,7 @@
 
 # TODO: Convert this to a playbook as well. Ansible supports playbooks-of-playbooks
 
+# doesn't need to run as root
 if [ $USER == "root" ] ; then
 	echo "This script does NOT need to be run as root (probably). If you disagree, edit the script"
 	echo "and remove the code that quits when you're root. Exiting abnormally."
@@ -21,15 +22,7 @@ fi
 ansibleHosts="/etc/ansible/$clusterName.ini"
 
 
-if [ ! -r $ansibleHosts ] ; then
-	echo " E First you must setup your workstation to build Palomino Cluster Tool!"
-	echo " E Suggestion: read README.md and treat it as a checklist."
-	exit 255
-fi
-
-
 # Sanity Check Overall Configuration
-
 echo " - Checking configuration."
 echo "   You should have one NameNode, one HMaster, one Zookeeper Node, and at least 4 DataNodes and RegionServers defined."
 
@@ -49,44 +42,8 @@ regionservers=`awk '/\[.+\]/{m=0};NF && m{t++};/\[regionservers\]/{m=1} END{prin
 if [ $regionservers -lt 4 ] ; then echo "There must be 4 (or more) entries in [regionservers] section in $ansibleHosts - found $regionservers" ; exit 255 ; fi
 
 
-# make sure we can read the passwordless key
-if [ ! -r /etc/mha/$clusterName/id_dsa ] ; then
-	echo " E Cannot read /etc/mha/$clusterName/id_dsa - give yourself permissions."
-	exit 255
-fi
-
-
-# -f 10 - fork ten processes at a time
-# -v    - verbosity
-ansibleFlags="--forks=10 --inventory-file=$ansibleHosts"
-
-
-# create a symlink for playbooks to use - remove at end of run
-ln -sf /etc/palomino/$clusterName/PalominoClusterToolConfig.yml ./currentPalominoConfiguration.yml
-
-
-# copy in common scripts, packages, make common configuration changes, etc
-echo ""
-echo " - `date` :: $0 Running Base Sane System Ansible Playbooks. ========================"
-ansible-playbook $ansibleFlags ./BaseSaneSystem/playbooks/setup.yml
-
-
-echo ""
-echo " - `date` :: $0 Hadoop (HDFS) Ansible Playbooks. ========================"
-for i in `ls -1 ./Hadoop/playbooks/*.yml` ; do
-	echo "   - `date` :: $i"
-	ansible-playbook $ansibleFlags $i
-done
-
-
-echo ""
-echo " - `date` :: $0 HBase Ansible Playbooks. ========================"
-for i in `ls -1 ./HBase/playbooks/*.yml` ; do
-	echo "   - `date` :: $i"
-	ansible-playbook $ansibleFlags $i
-done
-
-
-# clean up the temporary symlink
-rm -f ./currentPalominoConfiguration.yml
+# run the playbooks
+./lib-WrapPlaybooks.sh $clusterName BaseSaneSystem
+./lib-WrapPlaybooks.sh $clusterName Hadoop
+./lib-WrapPlaybooks.sh $clusterName HBase
 
