@@ -17,7 +17,7 @@ print '  `user_id` int unsigned NOT NULL,' . "\n";
 print '  `post_id` int unsigned NOT NULL,' . "\n";
 print '  `title` varchar(64) NOT NULL,' . "\n";
 print '  `words` varchar(2048) NOT NULL,' . "\n";
-print '  PRIMARY KEY (`user_id`)' . "\n";
+print '  PRIMARY KEY (`user_id`, `post_id`)' . "\n";
 print ') ENGINE=InnoDB DEFAULT CHARSET=utf8' . "\n";
 print ";\n";
 
