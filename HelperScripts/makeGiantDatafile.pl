@@ -9,7 +9,7 @@ my $estimateTitleWords = 8;
 my $fewestWords = 60;
 my $mostWords = 200;
 
-my @dictWords = split (/\n/, `cat /usr/share/dict/words`);
+my @dictWords = split (/\n/, `cat wordList.txt /usr/share/dict/words`);
 
 # make the table if it doesn't exist
 print 'CREATE TABLE if not exists `postings` (' . "\n";
