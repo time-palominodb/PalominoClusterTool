@@ -33,9 +33,12 @@ ansibleHosts="/etc/ansible/$clusterName.ini"
 # we'll store our modified config files here
 configDir="/etc/palomino/$clusterName"
 configFile="/etc/palomino/$clusterName/PalominoClusterToolConfig.yml"
+echo " - Making $configDir"
 sudo mkdir -p $configDir || echo " E Failed to create $configDir directory for configuration files."
+echo " - Generating configuration file"
+cat PalominoClusterToolConfig.yml | sed -e "s/__CLUSTERNAME__/$clusterName/g" > /tmp/PalominoClusterToolConfig-$clusterName.yml
 echo " - Writing ./PalominoClusterToolConfig.yml into $configFile"
-sudo cp PalominoClusterToolConfig.yml $configFile
+sudo cp /tmp/PalominoClusterToolConfig-$clusterName.yml $configFile
 
 
 # setup the Ansible inventory

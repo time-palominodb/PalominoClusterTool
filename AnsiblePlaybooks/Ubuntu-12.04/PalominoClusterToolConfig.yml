@@ -5,9 +5,11 @@
 cluster_passwordlessSudoUser: ubuntu
 
 # these directories will be created
-mha_log_directory: /var/log/mha
-mha_config_directory: /etc/mha
-mha_home_directory: /opt/mha
+# don't fret CLUSTERNAME, it'll be replaced by
+# configuration scripts
+mha_log_directory: /var/log/mha___CLUSTERNAME__
+mha_config_directory: /etc/mha___CLUSTERNAME__
+mha_home_directory: /opt/mha___CLUSTERNAME__
 
 # Your app uses these (and Jetpants is configured thusly)
 mysql_read_user: palominoAppRead
