@@ -2,13 +2,13 @@
 # create a replication user on the master for the slaves to connect to - and
 # also on slaves because they need to be able replicate from each other in case
 # of master failover
-- hosts: mysqlmasters:mysqlslaves
+- hosts: mysqlmasters
   user: ubuntu
   sudo: True
   vars_files:
    - ../../currentPalominoConfiguration.yml
   tasks:
-   - name: create replication user on masters
+   - name: create replication user on masters (and not slaves - replication will do that for us)
      action: mysql_user name=$repl_user  password=$repl_password  host=%  priv='*.*:replication slave'
 
 
