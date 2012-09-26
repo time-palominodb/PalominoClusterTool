@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+  <property>
+    <name>mapred.job.tracker</name>
+    <value>{{ hadoop["mapred.job.tracker"] }}</value>
+  </property>
+
+  <property>
+    <name>mapred.system.dir</name>
+    <value>{{ hadoop["mapred.system.dir"] }}</value>
+  </property>
+
+  <property>
+    <name>mapred.local.dir</name>
+    <value>{{ hadoop["mapred.local.dir"] }}</value>
+  </property>
+
+  <property>
+    <name>mapred.tasktracker.map.tasks.maximum</name>
+    <value>{{ hadoop["mapred.tasktracker.map.tasks.maximum"] }}</value>
+  </property>
+
+  <property>
+    <name>mapred.tasktracker.reduce.tasks.maximum</name>
+    <value>{{ hadoop["mapred.tasktracker.reduce.tasks.maximum"] }}</value>
+  </property>
+
+  <!--
+  <property>
+    <name>dfs.hosts/dfs.hosts.exclude</name>
+    <value>List of permitted/excluded DataNodes.</value>
+  </property>
+
+  <property>
+    <name>mapred.hosts/mapred.hosts.exclude</name>
+    <value>List of permitted/excluded TaskTrackers.</value>
+  </property>
+  -->
+
+  <property>
+    <name>mapred.queue.names</name>
+    <value>default,q1,q2,q3</value>
+  </property>
+
+  <property>
+    <name>mapred.child.java.opts</name>
+    <value>{{ hadoop["mapred.child.java.opts"] }}</value>
+  </property>
+</configuration>

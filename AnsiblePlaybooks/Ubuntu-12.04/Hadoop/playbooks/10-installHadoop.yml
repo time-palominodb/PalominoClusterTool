@@ -1,0 +1,93 @@
+---
+# on all hosts, install required software
+- hosts: hadoopmasters:hadoopslaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   # install the repos
+   - name: Install the CDH3 Repos
+     action: apt_repository repo=$item
+     with_items:
+      - 'deb http://archive.cloudera.com/debian precise-cdh3 contrib'
+      - 'deb-src http://archive.cloudera.com/debian precise-cdh3 contrib'
+
+   # install the software
+   - name: Install Hadoop and related libraries
+     action: apt name=$item state=installed force=yes update_cache=yes
+     with_items:
+      - hadoop-0.20
+      - hadoop-0.20-native
+
+   # set ulimits
+   - name: Give hdfs, mapred users proper limits
+     action: lineinfile name=/etc/security/limits.conf regexp=^hdfs\s+soft\s+nofile line=hdfs soft nofile 22000
+     action: lineinfile name=/etc/security/limits.conf regexp=^hdfs\s+hard\s+nofile line=hdfs soft nofile 768727
+     action: lineinfile name=/etc/security/limits.conf regexp=^hdfs\s+soft\s+nproc  line=hdfs soft nproc 32000
+     action: lineinfile name=/etc/security/limits.conf regexp=^hdfs\s+hard\s+nproc  line=hdfs soft nproc 63000
+     action: lineinfile name=/etc/security/limits.conf regexp=^mapred\s+soft\s+nofile line=mapred soft nofile 22000
+     action: lineinfile name=/etc/security/limits.conf regexp=^mapred\s+hard\s+nofile line=mapred soft nofile 768727
+     action: lineinfile name=/etc/security/limits.conf regexp=^mapred\s+soft\s+nproc  line=mapred soft nproc 32000
+     action: lineinfile name=/etc/security/limits.conf regexp=^mapred\s+hard\s+nproc  line=mapred soft nproc 63000
+
+
+- hosts: hadoopNameNodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install Hadoop and related libraries
+     action: apt name=$item state=installed
+     with_items:
+      - hadoop-0.20-namenode
+
+
+- hosts: hadoopSecondaryNameNode
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install Hadoop and related libraries
+     action: apt name=$item state=installed
+     with_items:
+      - hadoop-0.20-secondarynamenode
+
+
+- hosts: hadoopJobTrackers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install Hadoop and related libraries
+     action: apt name=$item state=installed
+     with_items:
+      - hadoop-0.20-jobtracker
+
+
+- hosts: hadoopDataNodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install Hadoop and related libraries
+     action: apt name=$item state=installed
+     with_items:
+      - hadoop-0.20-datanode
+
+
+- hosts: hadoopTaskTrackers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install Hadoop and related libraries
+     action: apt name=$item state=installed
+     with_items:
+      - hadoop-0.20-tasktracker
+

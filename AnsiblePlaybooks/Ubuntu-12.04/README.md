@@ -11,6 +11,10 @@ Steps to Perform for All Cluster Types
       "PalominoClusterToolTemplate_<clusterType>.ini". The INI file is formatted as
       an Ansible inventory file and will be copied into /etc/ansible, but will
       not overwrite an existing file in that directory.
+   1. Pick a trending solution from the scripts beginning with 20- and run one
+      to install monitoring on your cluster.
+   1. Pick an alerting solution from the scripts beginning with 30- and run one
+      to get alerting on your cluster.
 
 
 Steps to Set Up MySQL + MHA

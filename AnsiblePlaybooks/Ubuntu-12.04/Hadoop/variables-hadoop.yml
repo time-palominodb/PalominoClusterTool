@@ -1,0 +1,120 @@
+---
+# ==============================================================================
+# Hadoop variables that Palomino find interesting. This is a diminuitive subset
+# of actual variables that can be set. As the project matures, this file will
+# balloon out with settings and comments and itself will be refactored a number
+# of times.
+# ==============================================================================
+
+hadoop:
+  # change this to your intended NameNode IP address
+  nameNodeIPaddress: "10.20.30.40"
+
+  # what to name this Hadoop cluster
+  hadoop.ident.string: "PalominoHDFSdemo"
+
+  # The maximum amount of (hdfs) heap to use, in MB. Default is 1000.  Useful
+  # values are up to about 8GB. beyond that and Java garbage collection can
+  # become tricky. Your DataNode hardware should only have a max of about 16GB
+  # RAM (assertion expires Q3 2013).
+  hadoop.heapsize: 900
+
+  # if this setting is too low, you'll get ERRORs on your DataNodes when the
+  # cluster gets to a Real Usage Pattern. unaware of any reason not to set
+  # this to at least 4096
+  dfs.datanode.max.xcievers: 4096
+
+  # a four-disk setup will have a / and three mountpoints for each disk.
+  # enumerate them here. you can create a "/disk4" directory on your /
+  # partition to store some data on the / partition if you desire, but also
+  # consider that logs will go into / and log writing is different access
+  # pattern than data writing, so it's probabaly best to dedicate one of
+  # those drives to logs data
+  dfs.data.dir: "/disk1/hadoop/datadir,/disk2/hadoop/datadir,/disk3/hadoop/datadir"
+
+  # this is the default if a file doesn't specify its own replication
+  # count, but note that you can per-file specify a replication count, so
+  # don't set this too high. 3 is a good industry-standard default.
+  dfs.replication: 3
+
+  # mapreduce site settings, the JobTracker IP:port, directories used
+  # locally on TaskTracker nodes, max tasks, Java opts.
+  mapred.job.tracker: "10.20.30.40:50070"
+  mapred.local.dir: "/disk1/hadoop/mapred,/disk2/hadoop/mapred,/disk3/hadoop/mapred"
+  mapred.tasktracker.map.tasks.maximum: 30
+  mapred.tasktracker.reduce.tasks.maximum: 24
+  mapred.child.java.opts: "-Xmx512M"
+
+  # where to put hadoop directories
+  hadoop.log.dir: "/var/log/hadoop"
+  hadoop.conf.dir: "/etc/hadoop/conf"
+  hadoop.home: "/usr/lib/hadoop-0.20/"
+
+  # not sure proper values of this setting
+  mapred.tasktracker.tasks.sleeptime-before-sigkill: 30
+
+  ## CAPACITY SCHEDULER SETTINGS ==============================================
+  # Percentage of the number of slots in the cluster that are to be available
+  # for jobs in this queue.
+  mapred.capacity-scheduler.queue.default.capacity: 100
+
+  # maximum-capacity defines a limit beyond which a queue cannot use the
+  # capacity of the cluster.  This provides a means to limit how much excess
+  # capacity a queue can use. By default, there is no limit.  The
+  # maximum-capacity of a queue can only be greater than or equal to its
+  # minimum capacity.  Default value of -1 implies a queue can use complete
+  # capacity of the cluster.  This property could be to curtail certain jobs
+  # which are long running in nature from occupying more than a certain
+  # percentage of the cluster, which in the absence of pre-emption, could lead
+  # to capacity guarantees of other queues being affected.  One important thing
+  # to note is that maximum-capacity is a percentage , so based on the
+  # cluster's capacity the max capacity would change. So if large no of nodes
+  # or racks get added to the cluster , max Capacity in absolute terms would
+  # increase accordingly.
+  mapred.capacity-scheduler.queue.default.maximum-capacity: -1
+
+  # If true, priorities of jobs will be taken into account in scheduling
+  # decisions.
+  mapred.capacity-scheduler.queue.default.supports-priority: "false"
+
+  # <description> Each queue enforces a limit on the percentage of resources 
+  # allocated to a user at any given time, if there is competition for them. 
+  # This user limit can vary between a minimum and maximum value. The former
+  # depends on the number of users who have submitted jobs, and the latter is
+  # set to this property value. For example, suppose the value of this 
+  # property is 25. If two users have submitted jobs to a queue, no single 
+  # user can use more than 50% of the queue resources. If a third user submits
+  # a job, no single user can use more than 33% of the queue resources. With 4 
+  # or more users, no user can use more than 25% of the queue's resources. A 
+  # value of 100 implies no user limits are imposed. 
+  mapred.capacity-scheduler.queue.default.minimum-user-limit-percent: 100
+
+  # <description>The maximum number of jobs to be pre-initialized for a user
+  # of the job queue.
+  mapred.capacity-scheduler.queue.default.maximum-initialized-jobs-per-user: 2
+
+  # escription>If true, priorities of jobs will be taken into 
+  # account in scheduling decisions by default in a job queue.
+  mapred.capacity-scheduler.default-supports-priority: "false"
+  
+  # escription>The percentage of the resources limited to a particular user
+  # for the job queue at any given point of time by default.
+  mapred.capacity-scheduler.default-minimum-user-limit-percent: 100
+
+  # <description>The maximum number of jobs to be pre-initialized for a user
+  # of the job queue.
+  mapred.capacity-scheduler.default-maximum-initialized-jobs-per-user: 2
+
+  # <description>The amount of time in miliseconds which is used to poll 
+  # the job queues for jobs to initialize.
+  mapred.capacity-scheduler.init-poll-interval: 5000
+
+  # <description>Number of worker threads which would be used by
+  # Initialization poller to initialize jobs in a set of queue.
+  # If number mentioned in property is equal to number of job queues
+  # then a single thread would initialize jobs in a queue. If lesser
+  # then a thread would get a set of queues assigned. If the number
+  # is greater then number of threads would be equal to number of 
+  # job queues.
+  mapred.capacity-scheduler.init-worker-threads: 5
+

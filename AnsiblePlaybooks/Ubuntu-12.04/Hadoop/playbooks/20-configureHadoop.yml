@@ -1,0 +1,99 @@
+---
+# ensure mysqls are down before mutzing with their configs
+- hosts: hadoopmasters:hadoopslaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Setup MySQL Configuration for masters
+     action: template src=../templates/$item dest=/etc/hadoop/conf/$item owner=hadoop mode=0644
+     with_items:
+      - capacity-scheduler.xml
+      - configuration.xsl
+      - core-site.xml
+      - fair-scheduler.xml
+      - hadoop-env.sh
+      - hadoop-metrics.properties
+      - hadoop-policy.xml
+      - hdfs-site.xml
+      - log4j.properties
+      - mapred-queue-acls.xml
+      - mapred-site.xml
+      - masters
+      - org-xerial-snappy.properties
+      - slaves
+      - ssl-client.xml.example
+      - ssl-server.xml.example
+      - taskcontroller.cfg
+
+
+- hosts: hadoopNameNodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart NameNode - TODO - Convert to handler only do if confs changed
+     action: service name=hadoop-0.20-namenode state=restarted
+
+
+- hosts: hadoopDataNodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart DataNodes - TODO - Convert to handler only do if confs changed
+     action: service name=hadoop-0.20-datanode state=restarted
+
+
+- hosts: hadoopJobTrackers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart JobTracker - TODO - Convert to handler only do if confs changed
+     action: service name=hadoop-0.20-jobtracker state=restarted
+
+
+- hosts: hadoopTaskTrackers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart TaskTrackers - TODO - Convert to handler only do if confs changed
+     action: service name=hadoop-0.20-tasktracker state=restarted
+
+
+- hosts: hadoopslaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: create data directories for DataNodes
+     action: file state=directory mode=0755 owner=hdfs group=hdfs dest=$item
+     with_items:
+      # unsure how to specify this as a configuration and only create N of them
+      - /disk1/hadoop/datadir
+      - /disk2/hadoop/datadir
+      - /disk3/hadoop/datadir
+      - /disk4/hadoop/datadir
+      - /disk5/hadoop/datadir
+      - /disk6/hadoop/datadir
+      - /disk7/hadoop/datadir
+      - /disk8/hadoop/datadir
+      - /disk1/hadoop/mapred
+      - /disk2/hadoop/mapred
+      - /disk3/hadoop/mapred
+      - /disk4/hadoop/mapred
+      - /disk5/hadoop/mapred
+      - /disk6/hadoop/mapred
+      - /disk7/hadoop/mapred
+      - /disk8/hadoop/mapred
+      - /var/log/hadoop
+      - /var/lib/hadoop/namedir
+
