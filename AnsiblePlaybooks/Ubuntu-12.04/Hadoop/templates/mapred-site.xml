@@ -6,7 +6,7 @@
 <configuration>
   <property>
     <name>mapred.job.tracker</name>
-    <value>{{ hadoop["mapred.job.tracker"] }}</value>
+    <value>{{ hostvars[groups['NameNodes'][0]]['ansible_default_ipv4']['address'] }}:{{ hadoop['mapred.job.tracker.port'] }}</value>
   </property>
 
   <property>

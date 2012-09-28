@@ -1,13 +1,13 @@
 ---
-# ensure mysqls are down before mutzing with their configs
-- hosts: hadoopmasters:hadoopslaves
+- hosts: masters:slaves
   user: ubuntu
   sudo: True
   vars_files:
    - ../../currentPalominoConfiguration.yml
+   - ../variables-hadoop.yml
   tasks:
-   - name: Setup MySQL Configuration for masters
-     action: template src=../templates/$item dest=/etc/hadoop/conf/$item owner=hadoop mode=0644
+   - name: Setup Hadoop Configuration for masters, slaves
+     action: template src=../templates/$item dest=/etc/hadoop/conf/$item owner=hdfs mode=0644
      with_items:
       - capacity-scheduler.xml
       - configuration.xsl
@@ -27,57 +27,11 @@
       - ssl-server.xml.example
       - taskcontroller.cfg
 
-
-- hosts: hadoopNameNodes
-  user: ubuntu
-  sudo: True
-  vars_files:
-   - ../../currentPalominoConfiguration.yml
-  tasks:
-   - name: restart NameNode - TODO - Convert to handler only do if confs changed
-     action: service name=hadoop-0.20-namenode state=restarted
-
-
-- hosts: hadoopDataNodes
-  user: ubuntu
-  sudo: True
-  vars_files:
-   - ../../currentPalominoConfiguration.yml
-  tasks:
-   - name: restart DataNodes - TODO - Convert to handler only do if confs changed
-     action: service name=hadoop-0.20-datanode state=restarted
-
-
-- hosts: hadoopJobTrackers
-  user: ubuntu
-  sudo: True
-  vars_files:
-   - ../../currentPalominoConfiguration.yml
-  tasks:
-   - name: restart JobTracker - TODO - Convert to handler only do if confs changed
-     action: service name=hadoop-0.20-jobtracker state=restarted
-
-
-- hosts: hadoopTaskTrackers
-  user: ubuntu
-  sudo: True
-  vars_files:
-   - ../../currentPalominoConfiguration.yml
-  tasks:
-   - name: restart TaskTrackers - TODO - Convert to handler only do if confs changed
-     action: service name=hadoop-0.20-tasktracker state=restarted
-
-
-- hosts: hadoopslaves
-  user: ubuntu
-  sudo: True
-  vars_files:
-   - ../../currentPalominoConfiguration.yml
-  tasks:
-   - name: create data directories for DataNodes
+   - name: create/chown data directories and logdirs etc for NameNodes and DataNodes
      action: file state=directory mode=0755 owner=hdfs group=hdfs dest=$item
      with_items:
-      # unsure how to specify this as a configuration and only create N of them
+      # unsure how to specify this as a configuration and create N of them.
+      # for now create 8 and hope that'll be enough for anyone. like 640K is.
       - /disk1/hadoop/datadir
       - /disk2/hadoop/datadir
       - /disk3/hadoop/datadir
@@ -96,4 +50,53 @@
       - /disk8/hadoop/mapred
       - /var/log/hadoop
       - /var/lib/hadoop/namedir
+
+
+# Hadoop/HBase have broken "service ... status" check, so I have
+# to search for it in the PS list, which is also completely broken. so
+# we might just end up restarting services every time.
+- hosts: NameNodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: ensure hadoop dirs owned by hdfs
+     action: shell chown -R hdfs:hdfs /var/lib/hadoop /var/log/hadoop
+
+   - name: format NameNode if not already formatted
+     action: shell creates=/etc/hadoop/conf/NameNodeFormatted yes Y | hadoop namenode -format ; touch /etc/hadoop/conf/NameNodeFormatted
+
+   - name: restart NameNode - TODO - Convert to handler only do if confs changed
+     action: service name=hadoop-hdfs-namenode state=restarted pattern=NameNode
+
+
+- hosts: DataNodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart DataNodes - TODO - Convert to handler only do if confs changed
+     action: service name=hadoop-hdfs-datanode state=restarted pattern=DataNode
+
+
+- hosts: JobTrackers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart JobTracker - TODO - Convert to handler only do if confs changed
+     action: service name=hadoop-0.20-mapreduce-jobtracker state=restarted pattern=JobTracker
+
+
+- hosts: TaskTrackers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart TaskTrackers - TODO - Convert to handler only do if confs changed
+     action: service name=hadoop-0.20-mapreduce-tasktracker state=restarted pattern=TaskTracker
 

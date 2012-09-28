@@ -1,0 +1,32 @@
+---
+# zoo.cfg on each server must include list of all servers in the ensemble, and
+# each server must also have a myid file in its data directory (by default
+# /var/lib/zookeeper) that identifies it as one of the servers in the ensemble.
+- hosts: ZooKeepers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Configure HBase ZooKeepers - not yet finished
+     action: file dest=/var/lib/zookeeper state=directory mode=0755 owner=hbase group=hbase
+
+
+- hosts: masters:slaves
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+   - ../variables-hbase.yml
+  tasks:
+   - name: Setup HBase Configuration for masters, slaves
+     action: template src=../templates/$item dest=/etc/hbase/conf/$item owner=hbase mode=0644
+     with_items:
+      - hadoop-metrics.properties
+      - hbase-env.sh
+      - hbase-site.xml
+      - jmxremote.access
+      - jmxremote.passwd
+      - log4j.properties
+      - regionservers
+

@@ -24,15 +24,17 @@ Steps to Set Up MySQL + MHA
       management host. (This step may not be necessary)
    1. Allocate some servers. Database servers should have at least 1.5GB of RAM.
       Do not use t1.micro if you're building EC2 clusters!
-   1. Edit PalominoClusterToolLayout.ini and put in your list of servers.
+   1. Edit PalominoClusterToolLayout.ini and put in your list of servers. Note
+      that you should have symlinked this file as part of "for all cluster types"
+      instructions.
    1. As a user with sudo access, run 00-Setup_PalominoClusterTool.sh to
       prepare your workstation to build the distributed cluster.
    1. Edit MySQLMasterSlaves/variables-masters.yml and set the MySQL variables
       according to how you'd like. The files have comments to help you decide
       if you're not a guru MySQL DBA.
    1. Edit MySQLMasterSlaves/variables-slaves.yml to set the MySQL slave
-      variables similarly to the master. Your slaves are probably of a different
-      class of hardware than the master.
+      variables to match your slaves which are probably of a different class of
+      hardware than the master.
    1. Modify values in the
      /etc/palomino/<clusterName>/PalominoClusterToolConfig.yml to match your
      hardware.
@@ -51,15 +53,41 @@ Post-Setup Instructions:
 Steps to Set Up Hadoop (HDFS)
 =============================
 
-   1. HBase requires Hadoop as a prerequisite, so simply follow the HBase instructions,
-      but for any HBase-specific items, like installing Zookeeper, HMaster, or RegionServer
-      daemons, don't do those parts. You'll have a functional Hadoop cluster but sans
-      an HBase database on top of it.
+   1. Allocate servers. You'll want at least 1.5GB of RAM for a test setup. If
+      you're using EC2, please read about "Hadoop in EC2" and read up on all mailing
+      list posts to understand what you're getting into. Short version: you don't
+      want to run in EC2 for production, though it should be okay for a functional
+      (not operational!) test.
+   1. Download the Java 1.6 JDK onto your management node. Put a copy in /tmp and edit
+      Hadoop/playbooks/10-installHadoop.yml and you will find something to help get
+      it onto your nodes.
+   1. Edit PalominoClusterToolLayout.ini and put in your list of servers. Note
+      that you should have symlinked this file as part of "for all cluster types"
+      instructions. The Hadoop template file and HBase template file are the same
+      file.  You do not need to worry about ZooKeeper, HMaster, or RegionServer types
+      of machines for a Hadoop cluster. Just ignore those sections, or even delete
+      them, unless you'll also be setting up HBase.
+   1. Note for installing HBase, you do not need to follow the steps in this
+      section, HBase will automatically install Hadoop.
+
 
 Steps to Set Up HBase
 =====================
 
-   1. TODO.
+   1. Allocate servers. You'll want at least 1.5GB of RAM for a test setup. If you're
+      using EC2, please read about "Hadoop in EC2" and read up on all mailing list posts
+      to understand what you're getting into. Short version: you don't want to run in
+      EC2 for production, though it should be okay for a functional (not operational!)
+      test.
+   1. Download the Java 1.6 JDK onto your management node. Put a copy in /tmp and edit
+      Hadoop/playbooks/10-installHadoop.yml and you will find something to help get
+      it onto your nodes.
+   1. Edit PalominoClusterToolLayout.ini and put in your list of servers. Note
+      that you should have symlinked this file as part of "for all cluster types"
+      instructions. The Hadoop template file and HBase template file are the same file.
+   1. Note for installing HBase, you do not need to follow the steps in the Hadoop
+      section, HBase will automatically install Hadoop.
+
 
 Steps to Set Up Cassandra
 =========================

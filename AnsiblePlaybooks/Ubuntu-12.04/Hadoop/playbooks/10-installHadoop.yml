@@ -1,6 +1,6 @@
 ---
 # on all hosts, install required software
-- hosts: hadoopmasters:hadoopslaves
+- hosts: masters:slaves
   user: ubuntu
   sudo: True
   vars_files:
@@ -8,86 +8,106 @@
   tasks:
    # install the repos
    - name: Install the CDH3 Repos
-     action: apt_repository repo=$item
-     with_items:
-      - 'deb http://archive.cloudera.com/debian precise-cdh3 contrib'
-      - 'deb-src http://archive.cloudera.com/debian precise-cdh3 contrib'
+     action: copy src=../files/cloudera-cdh4.list dest=/etc/apt/sources.list.d/cloudera-cdh4.list
 
-   # install the software
+   # put your JRE in /tmp, also rename this to the .bin file you downloaded
+   - name: copy the Java JRE to the nodes
+     action: copy src=/tmp/jre-6u35-linux-x64.bin dest=/tmp/jre-6u35-linux-x64.bin
+
+   - name: ensure /usr/java exists
+     action: file dest=/usr/java state=directory mode=0755 owner=root group=root
+
+   - name: ensure Java .bin file is executable
+     action: file dest=/tmp/jre-6u35-linux-x64.bin mode=0755 owner=root group=root
+
+   # change the ln -sf depending on the version you downloaded
+   - name: install that crazy JRE
+     action: shell creates=/usr/java/default chdir=/usr/java /tmp/jre-6u35-linux-x64.bin ; ln -sf jre1.6.0_35 default
+
+   # install the Hadoop software
    - name: Install Hadoop and related libraries
      action: apt name=$item state=installed force=yes update_cache=yes
      with_items:
-      - hadoop-0.20
-      - hadoop-0.20-native
+      - hadoop-client
+      - hbase
 
    # set ulimits
-   - name: Give hdfs, mapred users proper limits
-     action: lineinfile name=/etc/security/limits.conf regexp=^hdfs\s+soft\s+nofile line=hdfs soft nofile 22000
-     action: lineinfile name=/etc/security/limits.conf regexp=^hdfs\s+hard\s+nofile line=hdfs soft nofile 768727
-     action: lineinfile name=/etc/security/limits.conf regexp=^hdfs\s+soft\s+nproc  line=hdfs soft nproc 32000
-     action: lineinfile name=/etc/security/limits.conf regexp=^hdfs\s+hard\s+nproc  line=hdfs soft nproc 63000
-     action: lineinfile name=/etc/security/limits.conf regexp=^mapred\s+soft\s+nofile line=mapred soft nofile 22000
-     action: lineinfile name=/etc/security/limits.conf regexp=^mapred\s+hard\s+nofile line=mapred soft nofile 768727
-     action: lineinfile name=/etc/security/limits.conf regexp=^mapred\s+soft\s+nproc  line=mapred soft nproc 32000
-     action: lineinfile name=/etc/security/limits.conf regexp=^mapred\s+hard\s+nproc  line=mapred soft nproc 63000
+   - name: Give hdfs proper limits 01
+     action: lineinfile name=/etc/security/limits.conf regexp='^hdfs - nofile' line='hdfs - nofile 32768'
+   - name: Give hdfs proper limits 02
+     action: lineinfile name=/etc/security/limits.conf regexp='^hdfs - nproc'  line='hdfs - nproc 62000'
+   - name: Give mapred proper limits 01
+     action: lineinfile name=/etc/security/limits.conf regexp='^mapred - nofile' line='mapred - nofile 32768'
+   - name: Give mapred proper limits 02
+     action: lineinfile name=/etc/security/limits.conf regexp='^mapred - nproc'  line='mapred - nproc 62000'
+   - name: Give hbase proper limits 01
+     action: lineinfile name=/etc/security/limits.conf regexp='^hbase - nofile' line='hbase - nofile 32768'
+   - name: Give hbase proper limits 02
+     action: lineinfile name=/etc/security/limits.conf regexp='^hbase - nproc'  line='hbase - nproc 62000'
+
+   - name: Set PAM to properly give ulimits
+     action: lineinfile name=/etc/pam.d/common-session regexp='pam_limits.so' line='session required pam_limits.so'
 
 
-- hosts: hadoopNameNodes
+- hosts: NameNodes
   user: ubuntu
   sudo: True
   vars_files:
    - ../../currentPalominoConfiguration.yml
   tasks:
-   - name: Install Hadoop and related libraries
-     action: apt name=$item state=installed
+   - name: Install Hadoop NameNodes
+     action: apt name=$item state=installed force=yes
      with_items:
-      - hadoop-0.20-namenode
+      - hadoop-hdfs-namenode
 
 
-- hosts: hadoopSecondaryNameNode
+## # huh? this fails. is the package depreceated and Cloudera
+## # documentation just not updated to reflect that fact? would
+## # make sense since there's now the backup namenode etc concepts.
+## - hosts: SecondaryNameNodes
+##   user: ubuntu
+##   sudo: True
+##   vars_files:
+##    - ../../currentPalominoConfiguration.yml
+##   tasks:
+##    - name: Install Hadoop SecondaryNameNodes
+##      action: apt name=$item state=installed force=yes
+##      with_items:
+##       - hadoop-hdfs-secondarynamenode
+
+
+- hosts: JobTrackers
   user: ubuntu
   sudo: True
   vars_files:
    - ../../currentPalominoConfiguration.yml
   tasks:
-   - name: Install Hadoop and related libraries
-     action: apt name=$item state=installed
+   - name: Install Hadoop JobTrackers
+     action: apt name=$item state=installed force=yes
      with_items:
-      - hadoop-0.20-secondarynamenode
+      - hadoop-0.20-mapreduce-jobtracker
 
 
-- hosts: hadoopJobTrackers
+- hosts: DataNodes
   user: ubuntu
   sudo: True
   vars_files:
    - ../../currentPalominoConfiguration.yml
   tasks:
-   - name: Install Hadoop and related libraries
-     action: apt name=$item state=installed
+   - name: Install Hadoop DataNodes
+     action: apt name=$item state=installed force=yes
      with_items:
-      - hadoop-0.20-jobtracker
+      - hadoop-hdfs-datanode
 
 
-- hosts: hadoopDataNodes
+- hosts: TaskTrackers
   user: ubuntu
   sudo: True
   vars_files:
    - ../../currentPalominoConfiguration.yml
   tasks:
-   - name: Install Hadoop and related libraries
-     action: apt name=$item state=installed
+   - name: Install Hadoop TaskTrackers
+     action: apt name=$item state=installed force=yes
      with_items:
-      - hadoop-0.20-datanode
-
-
-- hosts: hadoopTaskTrackers
-  user: ubuntu
-  sudo: True
-  vars_files:
-   - ../../currentPalominoConfiguration.yml
-  tasks:
-   - name: Install Hadoop and related libraries
-     action: apt name=$item state=installed
-     with_items:
-      - hadoop-0.20-tasktracker
+      - hadoop-0.20-mapreduce-tasktracker
 

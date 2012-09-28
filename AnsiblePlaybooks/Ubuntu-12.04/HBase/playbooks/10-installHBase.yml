@@ -1,0 +1,52 @@
+---
+# install required software on nodes - Hadoop will have already been
+# installed by the Hadoop playbooks - if not, please install Hadoop
+# before you try to run these playbooks or they'll fail miserably!
+- hosts: ZooKeepers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install HBase ZooKeepers
+     action: apt name=$item state=installed
+     with_items:
+      - zookeeper-server
+
+
+- hosts: HMasters
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install HBase HMaster
+     action: apt name=$item state=installed
+     with_items:
+      - hbase-master
+
+
+- hosts: ThriftServers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install HBase HMaster
+     action: apt name=$item state=installed
+     with_items:
+      - hbase-thrift
+
+
+- hosts: RegionServers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: Install HBase RegionServers
+     action: apt name=$item state=installed
+     with_items:
+      - hbase-regionserver
+
+

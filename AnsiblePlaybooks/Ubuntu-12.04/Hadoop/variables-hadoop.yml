@@ -11,7 +11,7 @@ hadoop:
   nameNodeIPaddress: "10.20.30.40"
 
   # what to name this Hadoop cluster
-  hadoop.ident.string: "PalominoHDFSdemo"
+  hadoop.ident.string: "hdfs"
 
   # The maximum amount of (hdfs) heap to use, in MB. Default is 1000.  Useful
   # values are up to about 8GB. beyond that and Java garbage collection can
@@ -37,9 +37,14 @@ hadoop:
   # don't set this too high. 3 is a good industry-standard default.
   dfs.replication: 3
 
+  # where to store the NameNode fsimage - can be comma-delimited list of
+  # directories for redundancy if the filesystem isn't already redundant, which
+  # Palomino recommends
+  dfs.name.dir: "/var/lib/hadoop/namedir"
+
   # mapreduce site settings, the JobTracker IP:port, directories used
   # locally on TaskTracker nodes, max tasks, Java opts.
-  mapred.job.tracker: "10.20.30.40:50070"
+  mapred.job.tracker.port: 50070
   mapred.local.dir: "/disk1/hadoop/mapred,/disk2/hadoop/mapred,/disk3/hadoop/mapred"
   mapred.tasktracker.map.tasks.maximum: 30
   mapred.tasktracker.reduce.tasks.maximum: 24

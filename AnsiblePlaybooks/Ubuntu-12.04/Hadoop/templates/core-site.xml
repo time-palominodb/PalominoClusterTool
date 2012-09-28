@@ -6,7 +6,7 @@
 <configuration>
   <property>
       <name>fs.default.name</name>
-      <value>hdfs://{{ hadoop["nameNodeIPaddress"] }}/</value>
+      <value>hdfs://{{ hostvars[groups['NameNodes'][0]]['ansible_default_ipv4']['address'] }}/</value>
   </property>
 </configuration>
 

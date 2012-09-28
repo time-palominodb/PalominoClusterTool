@@ -24,7 +24,7 @@ ansibleHosts="/etc/ansible/$clusterName.ini"
 
 # Sanity Check Overall Configuration
 echo " - Checking configuration."
-echo "   Ensuring minimum sane NameNode, HMaster, Zookeeper Nodes, DataNodes, and RegionServers defined."
+echo "   You should have one NameNode, and at least 4 DataNodes and TaskTrackers defined."
 
 NameNodes=`awk '/\[.+\]/{m=0};NF && m{t++};/\[NameNodes\]/{m=1} END{print t+0}' $ansibleHosts`
 if [ $NameNodes -ne 1 ] ; then echo "There must be one entry in [NameNodes] section in $ansibleHosts - found $NameNodes" ; exit 255 ; fi
@@ -38,18 +38,7 @@ if [ $JobTrackers -lt 4 ] ; then echo "There must be 4 (or more) entries in [Job
 TaskTrackers=`awk '/\[.+\]/{m=0};NF && m{t++};/\[TaskTrackers\]/{m=1} END{print t+0}' $ansibleHosts`
 if [ $TaskTrackers -lt 4 ] ; then echo "There must be 4 (or more) entries in [TaskTrackers] section in $ansibleHosts - found $TaskTrackers" ; exit 255 ; fi
 
-HMasters=`awk '/\[.+\]/{m=0};NF && m{t++};/\[HMasters\]/{m=1} END{print t+0}' $ansibleHosts`
-if [ $HMasters -ne 1 ] ; then echo "There must be one entry in [HMasters] section in $ansibleHosts - found $HMasters" ; exit 255 ; fi
-
-ZooKeepers=`awk '/\[.+\]/{m=0};NF && m{t++};/\[ZooKeepers\]/{m=1} END{print t+0}' $ansibleHosts`
-if [ $ZooKeepers -lt 3 ] ; then echo "There must be 3 (or more, preferably odd) entries in [ZooKeepers] section in $ansibleHosts - found $ZooKeepers" ; exit 255 ; fi
-
-RegionServers=`awk '/\[.+\]/{m=0};NF && m{t++};/\[RegionServers\]/{m=1} END{print t+0}' $ansibleHosts`
-if [ $RegionServers -lt 4 ] ; then echo "There must be 4 (or more) entries in [RegionServers] section in $ansibleHosts - found $RegionServers" ; exit 255 ; fi
-
-
 # run the playbooks
 ./lib-WrapPlaybooks.sh $clusterName BaseSaneSystem
 ./lib-WrapPlaybooks.sh $clusterName Hadoop
-./lib-WrapPlaybooks.sh $clusterName HBase
 

@@ -1,0 +1,2 @@
+monitorRole {{ hbase["monitor.role.password"] }}
+controlRole {{ hbase["control.role.password"] }}

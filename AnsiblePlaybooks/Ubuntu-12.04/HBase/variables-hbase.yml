@@ -1,0 +1,49 @@
+---
+# ==============================================================================
+# Hadoop variables that Palomino find interesting. This is a diminuitive subset
+# of actual variables that can be set. As the project matures, this file will
+# balloon out with settings and comments and itself will be refactored a number
+# of times.
+# ==============================================================================
+
+hbase:
+  # where HBase keeps its files inside HDFS
+  hbase.rootdir: "hdfs://10.20.30.40:8020/hbase"
+
+  hbase.zookeeper.quorum: "10.20.30.230,10.30.40.240,10.20.30.250"
+
+  # what to name this Hadoop cluster
+  hbase.ident.string: "PalominoHBaseDemo"
+
+  # for JMX
+  monitor.role.password: CHANGEME_PhilabCountliny
+  control.role.password: CHANGEME_RelatifUnfiychs
+
+  # The maximum amount of (hdfs) heap to use, in MB. Default is 1000.  Useful
+  # values are up to about 8GB. beyond that and Java garbage collection can
+  # become tricky. Your RegionServer hardware should only have a max of about 24GB
+  # RAM (assertion expires Q3 2013). remember that Hadoop DataNodes and TaskTrackers
+  # if you install on the same machines need some RAM.
+  hbase.heapsize: 700
+
+  # Enable java garbage collection logging in the .out file.
+  hbase.opts: "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps"
+
+  hbase.master.port: 60000
+
+  hbase.tmp.dir: "/var/lib/hbase/tmp"
+
+  # it is somewhat unclear, but it's possible a given RegionServer is a client of
+  # another RegionServer, so this setting may affect network communication between
+  # nodes of your HBase cluster.
+  hbase.client.write.buffer: 8388608
+
+  hbase.regionserver.handler.count: 20
+
+  # how long in ms to wait to sync log flushes - set to lower for less
+  # data loss on entire cluster shutdown, longer for better performance
+  # under high write load. also must set the DEFERRED_LOG_FLUSH on your
+  # table definition or this will make no difference. that is, by default,
+  # a table is safe from this setting.
+  hbase.regionserver.optionallogflushinterval: 750
+
