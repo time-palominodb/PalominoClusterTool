@@ -1,3 +1,2 @@
-{% for host in groups['hadoopmasters'] %}
-{{ hostvars[host]['ansible_default_ipv4']['address'] }}
+{% for host in groups['NameNodes'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}
 {% endfor %}

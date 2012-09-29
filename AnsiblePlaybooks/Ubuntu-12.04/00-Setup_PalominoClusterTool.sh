@@ -79,6 +79,7 @@ if [ $configPubkeyHashCount == 0 ] ; then
 	echo "#   cat /etc/mha/PalominoTest/id_dsa.pub" >> $tmpFile
 	echo "# If you're naming your cluster something besides PalominoTest, it should exist" >> $tmpFile
 	echo "# as /etc/mha/<clusterName>/id_dsa.pub" >> $tmpFile
+	echo "# Note that the SSH keypair is used for both HBase and MHA" >> $tmpFile
 	echo "cluster_sudoUserPrivateKey: /etc/mha/$clusterName/id_dsa" >> $tmpFile
 	echo "cluster_sudoUserPublicKey: `cat /etc/mha/$clusterName/id_dsa.pub`" >> $tmpFile
 	sudo cp -f $tmpFile $configFile 

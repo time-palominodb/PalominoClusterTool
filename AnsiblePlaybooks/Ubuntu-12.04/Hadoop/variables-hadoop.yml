@@ -7,9 +7,6 @@
 # ==============================================================================
 
 hadoop:
-  # change this to your intended NameNode IP address
-  nameNodeIPaddress: "10.20.30.40"
-
   # what to name this Hadoop cluster
   hadoop.ident.string: "hdfs"
 

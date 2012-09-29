@@ -13,7 +13,7 @@ fi
 # check input is a clusterName
 clusterName=$1
 if [ "xxx$clusterName" == "xxx" ] ; then
-	echo " E Usage: $0 <clusterName> <monitoringType>"
+	echo " E Usage: $0 <clusterName> <playbookType>"
 	echo " E Currently configured clusters:"
 	find /etc/mha -mindepth 1 -type d -printf "%f\n" | awk '{print " - "$_}'
 	exit 255

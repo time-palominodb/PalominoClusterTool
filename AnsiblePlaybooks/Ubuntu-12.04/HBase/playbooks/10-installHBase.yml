@@ -9,9 +9,11 @@
    - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Install HBase ZooKeepers
-     action: apt name=$item state=installed
+     action: apt name=$item state=installed force=yes
      with_items:
-      - zookeeper-server
+      - zookeeper
+      # CDH4 docs say zookeeper-server is an apt package, but it's lies
+      #- zookeeper-server
 
 
 - hosts: HMasters
@@ -21,7 +23,7 @@
    - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Install HBase HMaster
-     action: apt name=$item state=installed
+     action: apt name=$item state=installed force=yes
      with_items:
       - hbase-master
 
@@ -33,7 +35,7 @@
    - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Install HBase HMaster
-     action: apt name=$item state=installed
+     action: apt name=$item state=installed force=yes
      with_items:
       - hbase-thrift
 
@@ -45,7 +47,7 @@
    - ../../currentPalominoConfiguration.yml
   tasks:
    - name: Install HBase RegionServers
-     action: apt name=$item state=installed
+     action: apt name=$item state=installed force=yes
      with_items:
       - hbase-regionserver
 

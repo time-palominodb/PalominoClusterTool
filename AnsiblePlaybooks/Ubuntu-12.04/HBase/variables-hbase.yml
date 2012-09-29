@@ -7,11 +7,6 @@
 # ==============================================================================
 
 hbase:
-  # where HBase keeps its files inside HDFS
-  hbase.rootdir: "hdfs://10.20.30.40:8020/hbase"
-
-  hbase.zookeeper.quorum: "10.20.30.230,10.30.40.240,10.20.30.250"
-
   # what to name this Hadoop cluster
   hbase.ident.string: "PalominoHBaseDemo"
 

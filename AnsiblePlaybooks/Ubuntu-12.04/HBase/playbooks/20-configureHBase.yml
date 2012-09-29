@@ -8,8 +8,14 @@
   vars_files:
    - ../../currentPalominoConfiguration.yml
   tasks:
-   - name: Configure HBase ZooKeepers - not yet finished
-     action: file dest=/var/lib/zookeeper state=directory mode=0755 owner=hbase group=hbase
+   - name: create/chown ZooKeepers data directory
+     action: file dest=/var/lib/zookeeper state=directory mode=0755 owner=zookeeper group=zookeeper
+
+   - name: initialize the ZooKeepers
+     action: shell creates=/var/lib/zookeeper/myid /etc/init.d/zookeeper-server init --myid=$myid
+
+   - name: ensure /var/.../zookeeper is for zookeeper
+     action: shell chown -R zookeeper:zookeeper /var/log/zookeeper /var/lib/zookeeper
 
 
 - hosts: masters:slaves
@@ -29,4 +35,58 @@
       - jmxremote.passwd
       - log4j.properties
       - regionservers
+
+   - name: ensure /var/lib/hdfs/.ssh (homedir of hdfs) exists
+     action: file dest=/var/lib/hdfs/.ssh state=directory mode=0700 owner=hdfs group=hdfs
+
+   # re-use the MHA pub/privkey for HBase
+   - name: privkey for hdfs to SSH around at will
+     action: copy src=$cluster_sudoUserPrivateKey dest=/var/lib/hdfs/.ssh/id_dsa mode=0600 owner=hdfs group=hdfs
+
+   # re-use the MHA pub/privkey for HBase
+   - name: pubkey for hdfs to SSH around at will
+     action: authorized_key user=$cluster_passwordlessSudoUser key="$cluster_sudoUserPublicKey"
+
+
+- hosts: NameNodes
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: ensure hdfs:///hbase exists for HBase to store its files
+     action: shell creates=/var/lib/hbase/HBaseRootDirCreated sudo -u hdfs -s hadoop fs -mkdir -p /hbase && touch /var/lib/hbase/HBaseRootDirCreated
+
+   - name: ensure hdfs:///hbase is owned by HBase user
+     action: shell sudo -u hdfs -s hadoop fs -chown hbase:hbase /hbase
+
+
+- hosts: ZooKeepers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart ZooKeeper service
+     action: service name=zookeeper-server state=restarted pattern=zookeeper
+
+
+- hosts: HMasters
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart HMaster service
+     action: service name=hbase-master state=restarted pattern=-master-
+
+
+- hosts: RegionServers
+  user: ubuntu
+  sudo: True
+  vars_files:
+   - ../../currentPalominoConfiguration.yml
+  tasks:
+   - name: restart RegionServer services
+     action: service name=hbase-regionserver state=restarted pattern=RegionServer
 
