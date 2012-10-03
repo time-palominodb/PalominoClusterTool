@@ -19,7 +19,9 @@ How to Use It
    1. Enter [ConfigManager]/[Distribution] directory, edit INI and YAML files
       (this will take the longest time).
    1. Ask PalominoClusterTool to generate your cluster.
-   1. Join the mailing list and IRC channels to report errors or concerns.
+   1. Join the mailing list
+      (https://groups.google.com/d/forum/palomino-cluster-tool) and IRC channels
+      to report errors or concerns, and to discuss with other professionals.
 
 
 What is it?
