@@ -72,7 +72,6 @@ your participation in the project.
 License
 =======
 
-The project and all related scripts, playbooks, manifests, recipes are distributed
-under the terms of the GNU GPL version 2. The license is in the root directory of
-the project source control repo.
+The project and all related scripts, playbooks, manifests, recipes are Copyrighted
+works and distributed under the terms of the Apache License, version 2.0.
 
