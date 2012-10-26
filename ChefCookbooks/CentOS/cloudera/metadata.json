@@ -1,0 +1,33 @@
+{
+  "version": "0.0.0",
+  "recipes": {
+  },
+  "license": "Apache 2.0",
+  "maintainer": "Riot Games",
+  "groupings": {
+  },
+  "platforms": {
+    "fedora": ">= 0.0.0",
+    "centos": ">= 0.0.0",
+    "redhat": ">= 0.0.0"
+  },
+  "name": "cloudera",
+  "suggestions": {
+  },
+  "description": "Installs and configures cloudera (hadoop/hive)",
+  "providing": {
+  },
+  "recommendations": {
+  },
+  "dependencies": {
+    "yum": ">= 0.0.0"
+  },
+  "conflicting": {
+  },
+  "attributes": {
+  },
+  "maintainer_email": "cerson@me.com",
+  "long_description": "# Cloudera cookbook\n\nInstalls and configures [Cloudera's](http://www.cloudera.com/) Hadoop + Hive\n\n\n# Status\n\nThe cookbook is on a fairly good shape now, it was used to stand up a production cluster. New version is coming which will DRY up the codebase.\n\n# Requirements\n\n* Chef 10\n* Redhat, CentOS\n\n# Attributes\n\n## Version attributes\n\n* `node[:hadoop][:version]` - Cloudera \"sub version\", cloudera provides rpms with version info in the rpm name. Default `0.20` \n* `node[:hadoop][:release]` - Cloudera release. 3u1, 3u2, etc. Used to derive url path for repo file, if you provide something different make sure the cloudera repos ([5](http://archive.cloudera.com/redhat/cdh/) & [6](http://archive.cloudera.com/redhat/6/x86_64/cdh/)) still supports that version. Default `3u3`\n\n## Configuration attributes\n\n* `node[:hadoop][:conf_dir]` - The hadoop config dir used inside /etc/hadoop and referenced via the alternatives system. Default `conf.chef`\n* `node[:hadoop][:namenode_port]` - Port for namenode service. Default `54310`\n* `node[:hadoop][:jobtracker_port]` - Port for jobtracker service. Default `54311`\n\n##Rack-aware attributes\n\n* `node[:hadoop][:rackaware][:datacenter]` - What datacenter is this hadoop node in. Default `default`\n* `node[:hadoop][:rackaware][:rack]` - What rack is this hadoop node in. Default `rack0`\n\n## Alternate install location attributes\n* `node[:hadoop][:yum_repo_url]` - Provide an alternate yum install localtion. If you change this attribute `node[:hadoop][:release]` will not be used to derive the yum_repo_url and you are expected to provide a path to a working repo for the `node[:hadoop][:version]` used. Default `nil`\n* ~~`node[:hadoop][:yum_repo_key_url]` - Provide an alternate yum repo key location. Default `nil`~~ Currently not implamented!\n\n# License and Author\n\nAuthor:: Cliff Erson (<cerson@me.com>)\n\nAuthor:: Jamie Winsor (<jamie@vialstudios.com>)\n\nAuthor:: Istvan Szukacs (<istvan.szukacs@gmail.com>)\n\nCopyright 2012, Riot Games\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n",
+  "replacing": {
+  }
+}

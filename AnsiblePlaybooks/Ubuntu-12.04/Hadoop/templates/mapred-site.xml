@@ -23,13 +23,23 @@
 
 <configuration>
   <property>
-    <name>mapred.job.tracker</name>
+    <name>mapreduce.jobtracker.address</name>
     <value>{{ hostvars[groups['NameNodes'][0]]['ansible_default_ipv4']['address'] }}:{{ hadoop['mapred.job.tracker.port'] }}</value>
   </property>
 
   <property>
     <name>mapred.system.dir</name>
     <value>{{ hadoop["mapred.system.dir"] }}</value>
+  </property>
+
+  <property>
+    <name>mapreduce.jobtracker.staging.root.dir</name>
+    <value>/user/mapred</value>
+  </property>
+
+  <property>
+    <name>mapred.system.dir</name>
+    <value>/user/mapred/system</value>
   </property>
 
   <property>

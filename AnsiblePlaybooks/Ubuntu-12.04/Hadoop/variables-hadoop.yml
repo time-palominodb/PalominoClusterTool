@@ -57,6 +57,7 @@ hadoop:
 
   # mapreduce site settings, the JobTracker IP:port, directories used
   # locally on TaskTracker nodes, max tasks, Java opts.
+  mapreduce.jobtracker.ipaddress: "..."
   mapred.job.tracker.port: 50070
   mapred.local.dir: "/disk1/hadoop/mapred,/disk2/hadoop/mapred,/disk3/hadoop/mapred"
   mapred.tasktracker.map.tasks.maximum: 30
