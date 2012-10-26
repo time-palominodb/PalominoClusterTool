@@ -91,7 +91,7 @@ Issue this on all nodes if the date/time is broken:
 # ntpdate 0.centos.pool.ntp.org <--or whatever NTP server you prefer
 ```
 
-# Cheffery of the Nodes
+## Cheffery of the Nodes
 
 Give them roles. First, we'll do the "master" node. I'm putting HMaster and
 NameNode and JobTracker all on hbase-001. Not precisely how we want for
@@ -143,7 +143,7 @@ seem to fail somewhere once or twice. Or read the outputs on every node
 carefully to be sure stuff is working (running several times seems to be the
 time-wise thing to do).
 
-# Post-Chef Manual Steps
+## Post-Chef Manual Steps
 
 Once it's done running, you still won't have a running cluster. NameNode hasn't
 been formatted, so it won't start, and so DataNodes won't start, etc. All of
@@ -188,7 +188,7 @@ $ hadoop fs -mkdir /user/mapred
 $ hadoop fs -chown mapred:mapred /user/mapred
 ```
 
-# The Zookeeper Ensemble
+## The Zookeeper Ensemble
 
 You must also manually set up the Zookeeper ensemble. The Cookbook detailed
 herein will install the Zookeeper software on all nodes, but you must edit the
@@ -246,7 +246,7 @@ on all your nodes:
 One would hope simply running "chef-client" would start all the roles. If it
 does, then great! If not... the above helps things along a bit.
 
-# Operational Runbooks
+## Operational Runbooks
 
 If you need to stop/start everything, run the following on EVERY HBase/HDFS
 node in the cluster:
