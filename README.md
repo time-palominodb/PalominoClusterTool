@@ -17,7 +17,9 @@ How to Use It
    1. Decide your distribution, cluster configuration software, and database
       architecture.
    1. Enter [ConfigManager]/[Distribution] directory, edit INI and YAML files
-      (this will take the longest time).
+      (this will take the longest time). Some available choices are:
+      1. AnsiblePlaybooks/Ubuntu-12.04
+      1. ChefCookbooks/CentOS
    1. Ask PalominoClusterTool to generate your cluster.
    1. Join the mailing list
       (https://groups.google.com/d/forum/palomino-cluster-tool) and IRC channels
@@ -64,14 +66,18 @@ setting up clusters of MySQL, HBase, Cassandra, MongoDB, or other distributed
 database systems, please contact us! We'd love to hear about it and welcome
 your participation in the project.
 
+   * Tim Ellis, CTO & Principal Architect, Palomino - Project Leader
    * René Cannaò, Senior DBA, Data Architect, Palomino
-   * Tim Ellis, CTO & Principal Architect, Palomino
    * Charlie Killian, Director of Engineering, Palomino
+   * Cliff Erson, Riot Games
+   * Jamie Winsor, Riot Games
+   * Istvan Szukacs, Riot Games
 
 
 License
 =======
 
-The project and all related scripts, playbooks, manifests, recipes are Copyrighted
-works and distributed under the terms of the Apache License, version 2.0.
+The project and all related scripts, playbooks, manifests, recipes are
+Copyrighted works by the respective authors (noted in the source files
+themselves) and distributed under the terms of the Apache License, version 2.0.
 
