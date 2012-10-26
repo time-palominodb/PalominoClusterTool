@@ -12,11 +12,12 @@ Installs and configures [Cloudera's](http://www.cloudera.com/) Hadoop + Hive + H
 ## Prerequisites: Prepping Nodes for HBase
 
 The HBase cluster needs good mappings from hostnames to IP addresses. Setup DNS
-or, worst case, do something like this:
+or, worst case, do something like this (where 101..107 are the final octets of
+your IP addresses of your HBase machines):
 
 ```
 # c=1
-# for i in 136 122 92 105 84 141 139 ; do \
+# for i in 101 102 103 104 105 106 107 ; do \
     echo "10.0.0.$i            hbase-00$c" ; \
     c=$[ $c + 1 ] ; \
   done >> /etc/hosts
@@ -60,7 +61,7 @@ and node names could be anything.
 
 ```
 # c=1
-# for i in 136 122 92 105 84 141 139 ; do \
+# for i in 101 102 103 104 105 106 107 ; do \
     knife bootstrap 10.0.0.$i --node-name hbase-00$c --server-url http://10.0.0.254:4000 ; \
     c=$[ $c + 1 ] ; \
   done
@@ -165,7 +166,7 @@ but it's just refusing to continue without an uppercase Y.
 12/10/24 18:24:00 INFO namenode.NameNode: STARTUP_MSG: 
 /************************************************************
 STARTUP_MSG: Starting NameNode
-STARTUP_MSG:   host = hbase136/10.2.2.136
+STARTUP_MSG:   host = hbase136/10.0.0.101
 STARTUP_MSG:   args = [-format]
 STARTUP_MSG:   version = 0.20.2-cdh3u3
 STARTUP_MSG:   build = file:///data/1/tmp/topdir/BUILD/hadoop-0.20.2-cdh3u3 -r 318bc781117fa276ae81a3d111f5eeba0020634f; compiled by 'root' on Tue Mar 20 13:46:57 PDT 2012
