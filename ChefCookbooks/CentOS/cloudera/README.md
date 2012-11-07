@@ -220,8 +220,9 @@ error or another. Troubleshoot and fix those errors and repeat these steps.
 
 ## The Zookeeper Ensemble
 
-You must also manually set up the Zookeeper ensemble. The Cookbook detailed
-herein will install the Zookeeper software on all nodes, but you must edit the
+You must also manually set up the Zookeeper ensemble. This is also a strong
+candidate for being incorporated into a recipe. The Cookbook detailed herein
+will install the Zookeeper software on all nodes, but you must edit the
 configuration so HBase can use it. This Cookbook assumes an independent
 Zookeeper not controlled by HBase. Patches to allow for either with a simple
 configuration option are welcome.
@@ -257,6 +258,12 @@ And now start the zookeeper server on every node of the ensemble:
 ```
 # zookeeper-server start
 ```
+
+In the interest of saving you time, note that it appears to be harmless to put
+the config above on ALL nodes, whether or not they participate in the Zookeeper
+ensemble, and do a "zookeeper-server start" on all nodes as well. I am not yet
+certain if this has negative consequences, but it appears harmless. Any advice on
+this topic welcome on the mailing list.
 
 ## Starting the Cluster
 
