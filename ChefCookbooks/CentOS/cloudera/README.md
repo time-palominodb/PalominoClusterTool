@@ -258,7 +258,7 @@ And now start the zookeeper server on every node of the ensemble:
 # zookeeper-server start
 ```
 
-Starting the Cluster
+## Starting the Cluster
 
 Assuming Chef hasn't started all the proper roles (it never seems to succeed
 for me), you can start them by having ClusterSSH (or equivalent) and run this
