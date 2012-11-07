@@ -144,6 +144,26 @@ seem to fail somewhere once or twice. Or read the outputs on every node
 carefully to be sure stuff is working (running several times seems to be the
 time-wise thing to do).
 
+If you get the error as follows:
+
+```
+Errno::EEXIST
+-------------
+File exists - /etc/hadoop-0.20/conf
+```
+
+The solution is to remove the symlink that's there. Here's the symlink rm
+command and subsequent chef-client run which should then work.
+
+```
+# rm -rf /etc/hadoop-0.20/conf
+# chef-client
+```
+
+If this continues to be a problem, I'll write removing the symlink into the
+recipe itself.
+
+
 ## Post-Chef Manual Steps
 
 Once it's done running, you still won't have a running cluster. NameNode hasn't
