@@ -205,10 +205,18 @@ HDFS for HBase, and "/user/mapred" for JobTracker:
 # su - hdfs
 $ hadoop fs -mkdir /hbase
 $ hadoop fs -chown hbase:hbase /hbase
-$ hadoop fs -mkdir /user
 $ hadoop fs -mkdir /user/mapred
 $ hadoop fs -chown mapred:mapred /user/mapred
 ```
+
+If you get an error about an inability to chown the directory, pay careful
+attention to the "namenode format" output above. Did it actually format it
+properly? Is it storing its data in /tmp? If Chef hasn't completed the
+configuration of NameNode, it may be misconfigured and be using the filesystem,
+not HDFS.
+
+Another source of errors is that NameNode hasn't started yet, due to some
+error or another. Troubleshoot and fix those errors and repeat these steps.
 
 ## The Zookeeper Ensemble
 
