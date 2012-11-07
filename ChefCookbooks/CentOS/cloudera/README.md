@@ -80,7 +80,7 @@ to /usr/java:
 # ./jre-6u35-linux-x64.bin
 # mkdir -p /usr/java
 # mv jre1.6.0_35 /usr/java/
-# ln -sf /usr/java/default /usr/java/jre1.6.0_35
+# ln -sf /usr/java/jre1.6.0_35 /usr/java/default
 # alternatives --install /etc/alternatives/java java /usr/java/default/bin/java 10 
 # ln -sf /etc/alternatives/java /usr/local/bin/java
 ```
@@ -155,7 +155,8 @@ for this Cookbook.
 On your NameNode, issue:
 
 ```
-# hadoop namenode -format
+# su - hdfs
+$ hadoop namenode -format
 ```
 
 It will ask you if you're sure. Use an uppercase Y. If you use a lowercase Y
