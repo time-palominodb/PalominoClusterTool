@@ -228,23 +228,20 @@ initLimit=10
 syncLimit=5
 dataDir=/var/zookeeper
 clientPort=2181
-#server.0=localhost:2888:3888
-server.1=hbase-001:2888:3888
-server.2=hbase-002:2888:3888
-server.3=hbase-003:2888:3888
+server.101=hbase-001:2888:3888
+server.102=hbase-002:2888:3888
+server.103=hbase-003:2888:3888
 ```
 
-Each node needs a unique integer in the file /var/zookeeper/myid. The integers
-must start from 1 and go up. More precisely, I believe the integer from
-"server.N" must correspond to the myid created on each node. I am not certain
-of this. Create the myid file with the following command, but increment the
-integer for each host in the Zookeeper ensemble. If your hostnames are
-"zookeeper-001"..."zookeeper-00N" you could do cut magic to run the same
-command on all machines and get proper myids. I leave that as an exercise to
-the reader.
+Each node needs a unique integer in the file /var/zookeeper/myid. The integer
+from "server.N" must correspond to the myid created on each node. I recommend
+using the final octet of the IP address for the integers. The following command
+will take care of the "myid" portion for servers using the "10" non-routable IP
+address block (modify appropriately for 192 and 172 etc). Run it on all your
+Zookeeper servers.
 
 ```
-# echo "1" > /var/zookeeper/myid
+# ifconfig | grep addr:10 | awk '{print $2}' | awk -F . '{print $4}' > /var/zookeeper/myid
 ```
 
 And now start the zookeeper server on every node of the ensemble:
