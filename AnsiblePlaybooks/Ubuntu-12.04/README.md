@@ -27,7 +27,7 @@ Steps to Set Up MySQL + MHA
    1. Edit PalominoClusterToolLayout.ini and put in your list of servers. Note
       that you should have symlinked this file as part of "for all cluster types"
       instructions.
-   1. As a user with sudo access, run 00-Setup_PalominoClusterTool.sh to
+   1. As a user with sudo access (but don't use sudo to run this script), run 00-Setup_PalominoClusterTool.sh to
       prepare your workstation to build the distributed cluster.
    1. Edit MySQLMasterSlaves/variables-masters.yml and set the MySQL variables
       according to how you'd like. The files have comments to help you decide
