@@ -45,16 +45,17 @@ Then to make this survive reboots, put them into /etc/fstab:
 /dev/sdd1		/mnt/disk3		ext4	defaults	0 0" >> /etc/fstab
 ```
 
-The Cookbook as you "git clone" it will be called "cloudera-cookbook," but this
-is not what its name should be in Chef. It should be "cloudera." If you name it
-anything else, recipes will die with error as they hardcode "cloudera" as the
-cookbook name in several places:
+The Cookbook should be named "cloudera." If you name it anything else, recipes
+will die with error as they hardcode "cloudera" in several places. If you want
+to change the name, search for "include_recipe" in .rb files, and change
+instances of "cloudera" to whatever you would like it to be. Now upload your
+cookbook to the Chef server:
 
 ```
 # knife cookbook upload cloudera
 ```
 
-First bootstrap the 7 nodes. Call them hbase-001, hbase-002.... If you want the
+First bootstrap the 7 nodes. Call them hbase-001, hbase-002... If you want the
 rest of these instructions to work without alteration. Here's some pseudocode,
 but you have to do it manually (or write your own code) since your IP addresses
 and node names could be anything.
