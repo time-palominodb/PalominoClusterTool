@@ -250,3 +250,41 @@ execute "update hadoop alternatives" do
   command "alternatives --install /etc/hadoop-#{node[:hadoop][:version]}/conf hadoop-#{node[:hadoop][:version]}-conf /etc/hadoop-#{node[:hadoop][:version]}/#{node[:hadoop][:conf_dir]} 50"
 end
 
+# need to set ulimits for HBase and Hadoop and Mapred users
+template "/etc/security/limits.d/hbase.nofile.conf" do
+  source "hbase.nofile.conf"
+  mode 0644
+  owner "root"
+  group "root"
+end
+template "/etc/security/limits.d/hbase.nproc.conf" do
+  source "hbase.nproc.conf"
+  mode 0644
+  owner "root"
+  group "root"
+end
+template "/etc/security/limits.d/hdfs.nofile.conf" do
+  source "hdfs.nofile.conf"
+  mode 0644
+  owner "root"
+  group "root"
+end
+template "/etc/security/limits.d/hdfs.nproc.conf" do
+  source "hdfs.nproc.conf"
+  mode 0644
+  owner "root"
+  group "root"
+end
+template "/etc/security/limits.d/mapred.nofile.conf" do
+  source "mapred.nofile.conf"
+  mode 0644
+  owner "root"
+  group "root"
+end
+template "/etc/security/limits.d/mapred.nproc.conf" do
+  source "mapred.nproc.conf"
+  mode 0644
+  owner "root"
+  group "root"
+end
+
