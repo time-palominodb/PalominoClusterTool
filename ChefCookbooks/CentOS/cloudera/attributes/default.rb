@@ -146,6 +146,10 @@ default[:hbase][:hbase_env] = {
 	# The maximum amount of heap to use, in MB. Default is 1000.
 	"HBASE_HEAPSIZE" => 3000,
 
+	# for compression - 32-bit then 64-bit options
+	# "HBASE_LIBRARY_PATH" => "/usr/lib/hadoop/lib/native/Linux-i386-32",
+	"HBASE_LIBRARY_PATH" => "/usr/lib/hadoop/lib/native/Linux-amd64-64",
+
 	# Extra Java runtime options.
 	# Below are what we set by default.  May only work with SUN JVM.
 	# For more on why as well as other possible settings,
