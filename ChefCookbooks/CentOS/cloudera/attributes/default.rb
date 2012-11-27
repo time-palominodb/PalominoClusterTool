@@ -23,6 +23,10 @@
 default[:java][:install_flavor]           = "oracle"
 default[:java][:java_home]                = "/usr/java/default"
 
+# Ganglia multicast IP address - change to Ganglia multicast IP address or collector gmond
+default[:ganglia][:ipaddr]                = "10.0.0.201"
+default[:ganglia][:port]                  = "8649"
+
 # namenode search is broken, so we hardcode IP address here.
 default[:hadoop][:namenode_hostname]      = "hbase-001"
 default[:hadoop][:namenode_ipaddress]     = "10.0.0.1"
@@ -326,24 +330,24 @@ default[:hadoop][:hadoop_policy] = {
 
 default[:hadoop][:hadoop_metrics] = {
 	# Configuration of the "dfs" context for null
-	"dfs.class" => "org.apache.hadoop.metrics.spi.NullContext",
+	#"dfs.class" => "org.apache.hadoop.metrics.spi.NullContext",
 
 	# Configuration of the "dfs" context for ganglia
 	# Pick one: Ganglia 3.0 (former) or Ganglia 3.1 (latter)
 	# "dfs.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext",
-	# "dfs.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext31",
-	# "dfs.period" => "10",
-	# "dfs.servers" => "localhost:8649",
+	"dfs.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext31",
+	"dfs.period" => "10",
+	"dfs.servers" => "#{node[:ganglia][:ipaddr]}:#{node[:ganglia][:port]}",
 
 	# Configuration of the "mapred" context for null
-	"mapred.class" => "org.apache.hadoop.metrics.spi.NullContext",
+	#"mapred.class" => "org.apache.hadoop.metrics.spi.NullContext",
 
 	# Configuration of the "mapred" context for ganglia
 	# Pick one: Ganglia 3.0 (former) or Ganglia 3.1 (latter)
 	# "mapred.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext",
-	# "mapred.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext31",
-	# "mapred.period" => "10",
-	# "mapred.servers" => "localhost:8649",
+	"mapred.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext31",
+	"mapred.period" => "10",
+	"mapred.servers" => "#{node[:ganglia][:ipaddr]}:#{node[:ganglia][:port]}",
 
 	# Configuration of the "jvm" context for null
 	# "jvm.class" => "org.apache.hadoop.metrics.spi.NullContext",
@@ -354,9 +358,9 @@ default[:hadoop][:hadoop_metrics] = {
 	# "jvm.fileName" => "/tmp/jvmmetrics.log",
 
 	# Configuration of the "jvm" context for ganglia
-	# "jvm.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext",
-	# "jvm.period" => "10",
-	# "jvm.servers" => "localhost:8649",
+	"jvm.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext",
+	"jvm.period" => "10",
+	"jvm.servers" => "#{node[:ganglia][:ipaddr]}:#{node[:ganglia][:port]}",
 
 	# Configuration of the "ugi" context for null
 	"ugi.class" => "org.apache.hadoop.metrics.spi.NullContext",
@@ -370,9 +374,9 @@ default[:hadoop][:hadoop_metrics] = {
 	# "fairscheduler.fileName" => "/tmp/fairschedulermetrics.log",
 
 	# Configuration of the "fairscheduler" context for ganglia
-	# "fairscheduler.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext",
-	# "fairscheduler.period" => "10",
-	# "fairscheduler.servers" => "localhost:8649",
+	"fairscheduler.class" => "org.apache.hadoop.metrics.ganglia.GangliaContext",
+	"fairscheduler.period" => "10",
+	"fairscheduler.servers" => "#{node[:ganglia][:ipaddr]}:#{node[:ganglia][:port]}",
 }
 
 default[:hadoop][:fair_scheduler] = {
