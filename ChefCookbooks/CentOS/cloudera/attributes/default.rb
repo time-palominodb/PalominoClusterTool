@@ -39,6 +39,11 @@ default[:hadoop][:jobtracker_port]        = "8021"
 # zookeeper quorum may be used multiple places
 default[:hbase][:zookeeper_quorum]        = "hbase-001,hbase-002,hbase-003"
 
+# disk mount points
+default[:mountpoint][:disk1]                      = "/mnt/disk1"
+default[:mountpoint][:disk2]                      = "/mnt/disk2"
+default[:mountpoint][:disk3]                      = "/mnt/disk3"
+
 # hbase info - more is defined below in the hash for hbase-site.xml
 default[:hbase][:temp_dir]                = "/var/lib/hbase/tmp"
 default[:hbase][:pid_dir]                 = "/var/run/hbase"
@@ -196,7 +201,7 @@ default[:hbase][:hbase_env] = {
 default[:hadoop][:hdfs_site] = {
 	# directories for redundancy if the filesystem isn't already redundant,
 	# which Palomino recommends
-	"dfs.name.dir" => "/var/lib/hadoop/namedir,/disk1/hadoop/namedir,/disk2/hadoop/namedir,/disk3/hadoop/namedir",
+	"dfs.name.dir" => "/var/lib/hadoop/namedir,#{node[:mountpoint][:disk1]}/hadoop/namedir,#{node[:mountpoint][:disk2]}/hadoop/namedir,#{node[:mountpoint][:disk3]}/hadoop/namedir",
 
 	# if this setting is too low, you'll get ERRORs on your DataNodes when the
 	# cluster gets to a Real Usage Pattern. unaware of any reason not to set
@@ -209,7 +214,7 @@ default[:hadoop][:hdfs_site] = {
 	# consider that logs will go into / and log writing is different access
 	# pattern than data writing, so it's probabaly best to dedicate one of
 	# those drives to logs data
-	"dfs.data.dir" => "/disk1/hadoop/datadir,/disk2/hadoop/datadir,/disk3/hadoop/datadir",
+	"dfs.data.dir" => "#{node[:mountpoint][:disk1]}/hadoop/datadir,#{node[:mountpoint][:disk2]}/hadoop/datadir,#{node[:mountpoint][:disk3]}/hadoop/datadir",
 	
 	# this is the default if a file doesn't specify its own replication
 	# count, but note that you can per-file specify a replication count, so
@@ -241,7 +246,7 @@ default[:hadoop][:mapred_site] = {
 	# some ambiguity on internet about which parameter name is correct
 	"mapreduce.jobtracker.address" => "#{node[:hadoop][:jobtracker_ipaddress]}:#{node[:hadoop][:jobtracker_port]}",
 	"mapred.job.tracker"           => "#{node[:hadoop][:jobtracker_ipaddress]}:#{node[:hadoop][:jobtracker_port]}",
-	"mapred.local.dir" => "/disk1/hadoop/mapred,/disk2/hadoop/mapred,/disk3/hadoop/mapred",
+	"mapred.local.dir" => "#{node[:mountpoint][:disk1]}/hadoop/mapred,#{node[:mountpoint][:disk2]}/hadoop/mapred,#{node[:mountpoint][:disk3]}/hadoop/mapred",
 	"mapred.tasktracker.map.tasks.maximum" => 30,
 	"mapred.tasktracker.reduce.tasks.maximum" => 24,
 	"mapred.child.java.opts" => "-Xmx512M",
