@@ -27,6 +27,8 @@ include_recipe "cloudera::repo"
 if node[:hadoop][:release] == '3u3'
   package "hadoop-#{node[:hadoop][:version]}"
   package "hadoop-#{node[:hadoop][:version]}-native"
+elsif node[:hadoop][:release] == '4u2'
+  package "hadoop-client"
 end
 
 package "nscd"
