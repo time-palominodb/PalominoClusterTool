@@ -36,20 +36,18 @@ default[:hadoop][:namenode_port]          = "8020"
 default[:hadoop][:jobtracker_ipaddress]   = "10.0.0.1"
 default[:hadoop][:jobtracker_port]        = "8021"
 
-# zookeeper quorum may be used multiple places
+# zookeeper quorum
 default[:hbase][:zookeeper_quorum]        = "hbase-001,hbase-002,hbase-003"
 
-# disk mount points
+# disk mount points - 4-disk is a common setup
 default[:mountpoint][:disk1]                      = "/mnt/disk1"
 default[:mountpoint][:disk2]                      = "/mnt/disk2"
 default[:mountpoint][:disk3]                      = "/mnt/disk3"
+default[:mountpoint][:disk4]                      = "/mnt/disk4"
 
 # hbase info - more is defined below in the hash for hbase-site.xml
 default[:hbase][:temp_dir]                = "/var/lib/hbase/tmp"
 default[:hbase][:pid_dir]                 = "/var/run/hbase"
-
-default[:hadoop][:version]                = "0.20"
-default[:hadoop][:release]                = "3u3"
 
 default[:hadoop][:conf_dir]               = "conf"
 default[:hbase][:conf_dir]                = "conf"
@@ -426,7 +424,7 @@ default[:hadoop][:fair_scheduler] = {
 	}
 }
 
-default[:hadoop][:mapred_site]['mapred.fairscheduler.allocation.file'] = "/etc/hadoop-#{node[:hadoop][:version]}/#{node[:hadoop][:conf_dir]}/fair-scheduler.xml"
+default[:hadoop][:mapred_site]['mapred.fairscheduler.allocation.file'] = "/etc/hadoop/#{node[:hadoop][:conf_dir]}/fair-scheduler.xml"
 
 default[:hadoop][:log4j]['hadoop.root.logger']                                                 = 'INFO,console'
 default[:hadoop][:log4j]['hadoop.security.logger']                                             = 'INFO,console'
