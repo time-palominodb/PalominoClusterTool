@@ -23,7 +23,11 @@
 
 include_recipe "cloudera"
 
-package "hadoop-#{node[:hadoop][:version]}-datanode"
+if node[:hadoop][:release] == '4u2'
+  package "hadoop-hdfs-datanode"
+else
+  package "hadoop-#{node[:hadoop][:version]}-datanode"
+end
 
 #Example hue-plugins-1.2.0.0+114.20-1.noarch 
 package "hue-plugins" do

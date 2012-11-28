@@ -21,7 +21,11 @@
 
 include_recipe "cloudera"
 
-package "hadoop-#{node[:hadoop][:version]}-namenode"
+if node[:hadoop][:release] == '4u2'
+  package "hadoop-hdfs-namenode"
+else
+  package "hadoop-#{node[:hadoop][:version]}-namenode"
+end
 
 template "/etc/init.d/hadoop-#{node[:hadoop][:version]}-namenode" do
   mode 0755

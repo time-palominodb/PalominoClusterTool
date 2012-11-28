@@ -18,7 +18,11 @@
 # limitations under the License.
 #
 
-package "hadoop-hbase-thrift"
+if node[:hadoop][:release] == '4u2'
+  package "hbase-thrift"
+else
+  package "hadoop-hbase-thrift"
+end
 
 template "/etc/init.d/hadoop-hbase-thrift" do
   source "hadoop_hbase_thrift.erb"

@@ -18,4 +18,8 @@
 # limitations under the License.
 #
 
-package "hadoop-hbase"
+if node[:hadoop][:release] == '4u2'
+  package "hbase"
+else
+  package "hadoop-hbase"
+end

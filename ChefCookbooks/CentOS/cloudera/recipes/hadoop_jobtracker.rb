@@ -21,7 +21,11 @@
 
 include_recipe "cloudera"
 
-package "hadoop-#{node[:hadoop][:version]}-jobtracker"
+if node[:hadoop][:release] == '4u2'
+  package "hadoop-#{node[:hadoop][:version]}-mapreduce-jobtracker"
+else
+  package "hadoop-#{node[:hadoop][:version]}-jobtracker"
+end
 
 template "/etc/init.d/hadoop-#{node[:hadoop][:version]}-jobtracker" do
   mode 0755

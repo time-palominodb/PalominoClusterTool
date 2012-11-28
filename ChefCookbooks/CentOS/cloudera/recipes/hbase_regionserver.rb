@@ -18,7 +18,11 @@
 # limitations under the License.
 #
 
-package "hadoop-hbase-regionserver"
+if node[:hadoop][:release] == '4u2'
+  package "hbase-regionserver"
+else
+  package "hadoop-hbase-regionserver"
+end
 
 template "/etc/init.d/hadoop-hbase-regionserver" do
   source "hadoop_hbase_regionserver.erb"

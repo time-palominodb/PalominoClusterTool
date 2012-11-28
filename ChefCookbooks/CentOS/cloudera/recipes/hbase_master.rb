@@ -18,7 +18,11 @@
 # limitations under the License.
 #
 
-package "hadoop-hbase-master"
+if node[:hadoop][:release] == '4u2'
+  package "hbase-master"
+else
+  package "hadoop-hbase-master"
+end
 
 template "/etc/init.d/hadoop-hbase-master" do
   source "hadoop_hbase_master.erb"
