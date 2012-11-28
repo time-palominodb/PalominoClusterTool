@@ -24,15 +24,18 @@
 
 include_recipe "cloudera::repo"
 
-package "hadoop-#{node[:hadoop][:version]}"
-package "hadoop-#{node[:hadoop][:version]}-native"
+if node[:hadoop][:release] == '3u3'
+  package "hadoop-#{node[:hadoop][:version]}"
+  package "hadoop-#{node[:hadoop][:version]}-native"
+end
+
 package "nscd"
 
 service "nscd" do
   action [ :start, :enable ]
 end
 
-hadoop_conf_dir = "/etc/hadoop-#{node[:hadoop][:version]}/#{node[:hadoop][:conf_dir]}"
+hadoop_conf_dir = "/etc/hadoop/#{node[:hadoop][:conf_dir]}"
 hbase_conf_dir = "/etc/hbase/#{node[:hbase][:conf_dir]}"
 
 directory hadoop_conf_dir do
