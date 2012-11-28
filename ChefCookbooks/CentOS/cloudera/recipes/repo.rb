@@ -16,9 +16,9 @@ when "redhat", "centos", "scientific", "fedora"
     end
   end
 
-  yum_repository "cloudera-cdh3" do
-    name "cloudera-cdh3"
-    description "Cloudera's Hadoop"
+  yum_repository "cloudera-cdh#{node[:hadoop][:release]}" do
+    name "cloudera-cdh#{node[:hadoop][:release]}"
+    description "Cloudera's Hadoop Version CDH#{node[:hadoop][:release]}"
     url yum_repo_url
     action :add
   end

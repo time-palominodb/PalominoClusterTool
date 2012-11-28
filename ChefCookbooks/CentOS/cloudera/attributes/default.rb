@@ -23,6 +23,17 @@
 default[:java][:install_flavor]           = "oracle"
 default[:java][:java_home]                = "/usr/java/default"
 
+## # which to intstall - CDH3...
+## default[:hadoop][:version]                = "0.20"
+## default[:hadoop][:release]                = "3u3"
+## default[:hadoop][:yum_repo_url]           = nil
+## default[:hadoop][:yum_repo_key_url]       = nil
+# or CDH4... with MRv1 (not YARN)
+default[:hadoop][:version]                = "0.20"
+default[:hadoop][:release]                = "4u2"
+default[:hadoop][:yum_repo_url]           = "http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/4/"
+default[:hadoop][:yum_repo_key_url]       = "http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera"
+
 # Ganglia multicast IP address - change to Ganglia multicast IP address or collector gmond
 default[:ganglia][:ipaddr]                = "10.0.0.201"
 default[:ganglia][:port]                  = "8649"
@@ -55,10 +66,6 @@ default[:hbase][:conf_dir]                = "conf"
 # Provide rack info
 default[:hadoop][:rackaware][:datacenter] = "default"
 default[:hadoop][:rackaware][:rack]       = "rack0"
-
-# Use an alternate yum repo and key
-default[:hadoop][:yum_repo_url]           = nil
-default[:hadoop][:yum_repo_key_url]       = nil
 
 # generates hadoop-env.sh
 default[:hadoop][:hadoop_env] = {
