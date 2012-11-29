@@ -20,6 +20,10 @@
 
 if node[:hadoop][:release] == '4u2'
   package "hbase-thrift"
+
+  service "hbase-thrift" do
+    action [ :start, :enable ]
+  end
 elsif node[:hadoop][:release] == '3u3'
   package "hadoop-hbase-thrift"
 
@@ -32,8 +36,8 @@ elsif node[:hadoop][:release] == '3u3'
       :java_home => node[:java][:java_home]
     )
   end
-end
 
-service "hadoop-hbase-thrift" do
-  action [ :start, :enable ]
+  service "hadoop-hbase-thrift" do
+    action [ :start, :enable ]
+  end
 end

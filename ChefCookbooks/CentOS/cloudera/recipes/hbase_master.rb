@@ -18,6 +18,10 @@
 
 if node[:hadoop][:release] == '4u2'
   package "hbase-master"
+
+  service "hbase-master" do
+    action [ :start, :enable ]
+  end
 elsif node[:hadoop][:release] == '3u3'
   package "hadoop-hbase-master"
 
@@ -50,8 +54,9 @@ elsif node[:hadoop][:release] == '3u3'
       :java_home => node[:java][:java_home]  
     )
   end
+
+  service "hadoop-hbase-master" do
+    action [ :start, :enable ]
+  end
 end
 
-service "hadoop-hbase-master" do
-  action [ :start, :enable ]
-end
