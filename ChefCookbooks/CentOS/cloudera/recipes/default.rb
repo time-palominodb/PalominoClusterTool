@@ -98,9 +98,9 @@ end
 # TODO dfs.secondary.http.address should have port made into an attribute - maybe
 #hdfs_site_vars[:options]['dfs.secondary.http.address'] = "#{secondary_namenode[:ipaddress]}:50090" if secondary_namenode
 
-if [:hadoop][:release] == '3u3'
+if node[:hadoop][:release] == '3u3'
   hdfs_site_vars = { :options => node[:cdh3][:hdfs_site] }
-elsif [:hadoop][:release] == '4u2'
+elsif node[:hadoop][:release] == '4u2'
   hdfs_site_vars = { :options => node[:cdh4][:hdfs_site] }
 end
 
