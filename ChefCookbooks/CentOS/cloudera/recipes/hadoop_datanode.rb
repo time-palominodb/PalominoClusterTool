@@ -60,6 +60,12 @@ node[:hadoop][:hdfs_site]['dfs.data.dir'].split(',').each do |dir|
   end
 end
 
-service "hadoop-#{node[:hadoop][:version]}-datanode" do
-  action [ :start, :enable ]
+if node[:hadoop][:release] == '3u3'
+  service "hadoop-#{node[:hadoop][:version]}-datanode" do
+    action [ :start, :enable ]
+  end
+elsif node[:hadoop][:release] == '4u2'
+  service "hadoop-hdfs-datanode" do
+    action [ :start, :enable ]
+  end
 end

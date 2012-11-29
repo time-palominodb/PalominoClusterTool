@@ -46,3 +46,12 @@ node[:hadoop][:hdfs_site]['dfs.name.dir'].split(',').each do |dir|
   end
 end
 
+if node[:hadoop][:release] == '3u3'
+  service "hadoop-#{node[:hadoop][:version]}-namenode" do
+    action [ :start, :enable ]
+  end
+elsif node[:hadoop][:release] == '4u2'
+  service "hadoop-hdfs-namenode" do
+    action [ :start, :enable ]
+  end
+end
