@@ -46,6 +46,7 @@ if node[:hadoop][:release] == '3u3'
       action :create
       recursive true
     end
+  end
 elsif node[:hadoop][:release] == '4u2'
   node[:cdh4][:hdfs_site]['dfs.data.dir'].split(',').each do |dir|
     directory dir do
@@ -55,6 +56,7 @@ elsif node[:hadoop][:release] == '4u2'
       action :create
       recursive true
     end
+  end
 end
 
 if node[:hadoop][:release] == '3u3'
