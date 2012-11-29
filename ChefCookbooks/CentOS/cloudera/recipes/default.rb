@@ -257,7 +257,7 @@ end
 execute "update hadoop alternatives" do
   command "alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/#{node[:hadoop][:conf_dir]} 50"
   command "alternatives --set hadoop-conf /etc/hadoop/#{node[:hadoop][:conf_dir]} "
-  command "alternatives --install /etc/hbase/conf hbase-conf /etc/hbase/#{node[:hadoop][:conf_dir]} 50"
+  command "alternatives --install /etc/hbase/conf hbase-conf /etc/hbase/#{node[:hbase][:conf_dir]} 50"
   command "alternatives --set hbase-conf /etc/hbase/#{node[:hbase][:conf_dir]} "
 end
 
