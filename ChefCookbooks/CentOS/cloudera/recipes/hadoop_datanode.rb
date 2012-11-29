@@ -55,6 +55,10 @@ if node[:hadoop][:release] == '3u3'
       action :create
       recursive true
     end
+    directory "#{dir}/lost+found" do
+      owner "hdfs"
+      group "hdfs"
+    end
   end
 elsif node[:hadoop][:release] == '4u2'
   node[:cdh4][:hdfs_site]['dfs.data.dir'].split(',').each do |dir|
@@ -65,14 +69,13 @@ elsif node[:hadoop][:release] == '4u2'
       action :create
       recursive true
     end
+    directory "#{dir}/lost+found" do
+      owner "hdfs"
+      group "hdfs"
+    end
   end
 end
 
-  directory "#{dir}/lost+found" do
-    owner "hdfs"
-    group "hdfs"
-  end
-end
 
 if node[:hadoop][:release] == '3u3'
   service "hadoop-#{node[:hadoop][:version]}-datanode" do
