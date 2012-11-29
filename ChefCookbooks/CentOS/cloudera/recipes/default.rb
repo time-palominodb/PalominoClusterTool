@@ -98,7 +98,12 @@ end
 # TODO dfs.secondary.http.address should have port made into an attribute - maybe
 #hdfs_site_vars[:options]['dfs.secondary.http.address'] = "#{secondary_namenode[:ipaddress]}:50090" if secondary_namenode
 
-hdfs_site_vars = { :options => node[:hadoop][:hdfs_site] }
+if [:hadoop][:release] == '3u3'
+  hdfs_site_vars = { :options => node[:cdh3][:hdfs_site] }
+elsif [:hadoop][:release] == '4u2'
+  hdfs_site_vars = { :options => node[:cdh4][:hdfs_site] }
+end
+
 template "#{hadoop_conf_dir}/hdfs-site.xml" do
   source "generic-site.xml.erb"
   mode 0644

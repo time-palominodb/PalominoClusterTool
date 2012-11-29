@@ -211,7 +211,42 @@ default[:hbase][:hbase_env] = {
 	# "HBASE_SLAVE_SLEEP" => 0.1,
 }
 
-default[:hadoop][:hdfs_site] = {
+default[:cdh4][:hdfs_site] = {
+	# directories for redundancy if the filesystem isn't already redundant,
+	# which Palomino recommends
+	"dfs.name.dir" => "file:///var/lib/hadoop/namedir,file://#{node[:mountpoint][:disk1]}/hadoop/namedir,file://#{node[:mountpoint][:disk2]}/hadoop/namedir,file://#{node[:mountpoint][:disk3]}/hadoop/namedir",
+
+	# if this setting is too low, you'll get ERRORs on your DataNodes when the
+	# cluster gets to a Real Usage Pattern. unaware of any reason not to set
+	# this to at least 4096
+	"dfs.datanode.max.xcievers" => 4096,
+	
+	# a four-disk setup will have a / and three mountpoints for each disk.
+	# enumerate them here. you can create a "/disk4" directory on your /
+	# partition to store some data on the / partition if you desire, but also
+	# consider that logs will go into / and log writing is different access
+	# pattern than data writing, so it's probabaly best to dedicate one of
+	# those drives to logs data
+	"dfs.data.dir" => "file://#{node[:mountpoint][:disk1]}/hadoop/datadir,file://#{node[:mountpoint][:disk2]}/hadoop/datadir,file://#{node[:mountpoint][:disk3]}/hadoop/datadir,file://#{node[:mountpoint][:disk4]}/hadoop/datadir",
+	
+	# this is the default if a file doesn't specify its own replication
+	# count, but note that you can per-file specify a replication count, so
+	# don't set this too high. 3 is a good industry-standard default.
+	"dfs.replication" => 3,
+	
+	# where to store the NameNode fsimage - can be comma-delimited list of
+	# where to put hadoop directories
+	"hadoop.log.dir" => "#{node[:hadoop][:logdir]}",
+	"hadoop.conf.dir" => "/etc/hadoop/conf",
+	"hadoop.home" => "#{node[:hadoop][:home]}",
+
+	# for defining rack topology
+	"topology.script.file.name" => "/usr/local/bin/hadoop-topology/nodes.rb",
+
+	"dfs.permissions.superusergroup" => "hadoop",
+}
+
+default[:cdh3][:hdfs_site] = {
 	# directories for redundancy if the filesystem isn't already redundant,
 	# which Palomino recommends
 	"dfs.name.dir" => "/var/lib/hadoop/namedir,#{node[:mountpoint][:disk1]}/hadoop/namedir,#{node[:mountpoint][:disk2]}/hadoop/namedir,#{node[:mountpoint][:disk3]}/hadoop/namedir",
@@ -241,14 +276,12 @@ default[:hadoop][:hdfs_site] = {
 	"hadoop.home" => "#{node[:hadoop][:home]}",
 
 	# TODO: unsure what these are - research them
+	# They are CDH3-only, do not exist in CDH4
 	"dfs.namenode.plugins" => "org.apache.hadoop.thriftfs.NamenodePlugin",
 	"dfs.datanode.plugins" => "org.apache.hadoop.thriftfs.DatanodePlugin",
 
 	# for defining rack topology
 	"topology.script.file.name" => "/usr/local/bin/hadoop-topology/nodes.rb",
-
-	# cdh4 but shouldn't hurt cdh3 to have extra param
-	"dfs.permissions.superusergroup" => "hadoop",
 }
 
 default[:hadoop][:core_site] = {
