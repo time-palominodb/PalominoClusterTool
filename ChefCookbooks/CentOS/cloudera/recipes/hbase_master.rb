@@ -1,4 +1,3 @@
-#
 # Cookbook Name:: cloudera
 # Recipe:: hbase_master
 #
@@ -16,42 +15,41 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 if node[:hadoop][:release] == '4u2'
   package "hbase-master"
-else
+elsif node[:hadoop][:release] == '3u3'
   package "hadoop-hbase-master"
-end
 
-template "/etc/init.d/hadoop-hbase-master" do
-  source "hadoop_hbase_master.erb"
-  mode 0755
-  owner "root"
-  group "root"
-  variables(
-    :java_home => node[:java][:java_home]
-  )
-end
-
-template "/usr/lib/hbase/bin/hbase-daemon.sh" do
-  source "hbase_daemon.erb"
-  mode 0755
-  owner "root"
-  group "root"
-  variables(
-    :java_home => node[:java][:java_home]  
-  )
-end
-
-template "/usr/lib/hbase/bin/hbase-config.sh" do
-  source "hbase_config.erb"
-  mode 0755
-  owner "root"
-  group "root"
-  variables(
-    :java_home => node[:java][:java_home]  
-  )
+  template "/etc/init.d/hadoop-hbase-master" do
+    source "hadoop_hbase_master.erb"
+    mode 0755
+    owner "root"
+    group "root"
+    variables(
+      :java_home => node[:java][:java_home]
+    )
+  end
+  
+  template "/usr/lib/hbase/bin/hbase-daemon.sh" do
+    source "hbase_daemon.erb"
+    mode 0755
+    owner "root"
+    group "root"
+    variables(
+      :java_home => node[:java][:java_home]  
+    )
+  end
+  
+  template "/usr/lib/hbase/bin/hbase-config.sh" do
+    source "hbase_config.erb"
+    mode 0755
+    owner "root"
+    group "root"
+    variables(
+      :java_home => node[:java][:java_home]  
+    )
+  end
 end
 
 service "hadoop-hbase-master" do

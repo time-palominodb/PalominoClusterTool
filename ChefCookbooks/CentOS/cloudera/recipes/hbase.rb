@@ -20,6 +20,6 @@
 
 if node[:hadoop][:release] == '4u2'
   package "hbase"
-else
+elsif node[:hadoop][:release] == '3u3'
   package "hadoop-hbase"
 end

@@ -45,6 +45,12 @@ node[:hadoop][:mapred_site]['mapred.local.dir'].split(',').each do |dir|
   end
 end
 
-service "hadoop-#{node[:hadoop][:version]}-tasktracker" do
-  action [ :start, :enable ]
+if node[:hadoop][:release] == '4u2'
+  service "hadoop-#{node[:hadoop][:version]}-mapreduce-tasktracker" do
+    action [ :start, :enable ]
+  end
+elsif node[:hadoop][:release] == '3u3'
+  service "hadoop-#{node[:hadoop][:version]}-tasktracker" do
+    action [ :start, :enable ]
+  end
 end

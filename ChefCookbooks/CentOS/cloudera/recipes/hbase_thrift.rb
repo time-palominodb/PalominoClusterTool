@@ -20,18 +20,18 @@
 
 if node[:hadoop][:release] == '4u2'
   package "hbase-thrift"
-else
+elsif node[:hadoop][:release] == '3u3'
   package "hadoop-hbase-thrift"
-end
 
-template "/etc/init.d/hadoop-hbase-thrift" do
-  source "hadoop_hbase_thrift.erb"
-  mode 0755
-  owner "root"
-  group "root"
-  variables(
-    :java_home => node[:java][:java_home]
-  )
+  template "/etc/init.d/hadoop-hbase-thrift" do
+    source "hadoop_hbase_thrift.erb"
+    mode 0755
+    owner "root"
+    group "root"
+    variables(
+      :java_home => node[:java][:java_home]
+    )
+  end
 end
 
 service "hadoop-hbase-thrift" do
