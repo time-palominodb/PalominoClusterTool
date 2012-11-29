@@ -167,13 +167,24 @@ template node[:hadoop][:mapred_site]['mapred.fairscheduler.allocation.file'] do
   variables node[:hadoop][:fair_scheduler]
 end
 
-template "#{hadoop_conf_dir}/log4j.properties" do
-  source "generic.properties.erb"
-  mode 0644
-  owner "hdfs"
-  group "hdfs"
-  action :create
-  variables( :properties => node[:hadoop][:log4j] )
+if node[:hadoop][:release] == '3u3'
+  template "#{hadoop_conf_dir}/log4j.properties" do
+    source "generic.properties.erb"
+    mode 0644
+    owner "hdfs"
+    group "hdfs"
+    action :create
+    variables( :properties => node[:cdh3][:log4j] )
+  end
+elsif node[:hadoop][:release] == '4u2'
+  template "#{hadoop_conf_dir}/log4j.properties" do
+    source "generic.properties.erb"
+    mode 0644
+    owner "hdfs"
+    group "hdfs"
+    action :create
+    variables( :properties => node[:cdh4][:log4j] )
+  end
 end
 
 template "#{hadoop_conf_dir}/hadoop-metrics.properties" do

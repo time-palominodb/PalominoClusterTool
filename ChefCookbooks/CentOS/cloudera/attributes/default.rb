@@ -447,49 +447,164 @@ default[:hadoop][:fair_scheduler] = {
 
 default[:hadoop][:mapred_site]['mapred.fairscheduler.allocation.file'] = "/etc/hadoop/#{node[:hadoop][:conf_dir]}/fair-scheduler.xml"
 
-default[:hadoop][:log4j]['hadoop.root.logger']                                                 = 'INFO,console'
-default[:hadoop][:log4j]['hadoop.security.logger']                                             = 'INFO,console'
-default[:hadoop][:log4j]['hadoop.log.dir']                                                     = '#{node[:hadoop][:logdir]}'
-default[:hadoop][:log4j]['hadoop.log.file']                                                    = 'hadoop.log'
-default[:hadoop][:log4j]['hadoop.mapreduce.jobsummary.logger']                                 = '${hadoop.root.logger}'
-default[:hadoop][:log4j]['hadoop.mapreduce.jobsummary.log.file']                               = 'hadoop-mapreduce.jobsummary.log'
-default[:hadoop][:log4j]['log4j.rootLogger']                                                   = '${hadoop.root.logger}, EventCounter'
-default[:hadoop][:log4j]['log4j.threshhold']                                                   = 'ALL'
-default[:hadoop][:log4j]['log4j.appender.DRFA']                                                = 'org.apache.log4j.DailyRollingFileAppender'
-default[:hadoop][:log4j]['log4j.appender.DRFA.File']                                           = '${hadoop.log.dir}/${hadoop.log.file}'
-default[:hadoop][:log4j]['log4j.appender.DRFA.DatePattern']                                    = '.yyyy-MM-dd'
-default[:hadoop][:log4j]['log4j.appender.DRFA.layout']                                         = 'org.apache.log4j.PatternLayout'
-default[:hadoop][:log4j]['log4j.appender.DRFA.layout.ConversionPattern']                       = '%d{ISO8601} %p %c: %m%n'
-default[:hadoop][:log4j]['log4j.appender.console']                                             = 'org.apache.log4j.ConsoleAppender'
-default[:hadoop][:log4j]['log4j.appender.console.target']                                      = 'System.err'
-default[:hadoop][:log4j]['log4j.appender.console.layout']                                      = 'org.apache.log4j.PatternLayout'
-default[:hadoop][:log4j]['log4j.appender.console.layout.ConversionPattern']                    = '%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n'
-default[:hadoop][:log4j]['hadoop.tasklog.taskid']                                              = 'null'
-default[:hadoop][:log4j]['hadoop.tasklog.iscleanup']                                           = 'false'
-default[:hadoop][:log4j]['hadoop.tasklog.noKeepSplits']                                        = '4'
-default[:hadoop][:log4j]['hadoop.tasklog.totalLogFileSize']                                    = '100'
-default[:hadoop][:log4j]['hadoop.tasklog.purgeLogSplits']                                      = 'true'
-default[:hadoop][:log4j]['hadoop.tasklog.logsRetainHours']                                     = '12'
-default[:hadoop][:log4j]['log4j.appender.TLA']                                                 = 'org.apache.hadoop.mapred.TaskLogAppender'
-default[:hadoop][:log4j]['log4j.appender.TLA.taskId']                                          = '${hadoop.tasklog.taskid}'
-default[:hadoop][:log4j]['log4j.appender.TLA.isCleanup']                                       = '${hadoop.tasklog.iscleanup}'
-default[:hadoop][:log4j]['log4j.appender.TLA.totalLogFileSize']                                = '${hadoop.tasklog.totalLogFileSize}'
-default[:hadoop][:log4j]['log4j.appender.TLA.layout']                                          = 'org.apache.log4j.PatternLayout'
-default[:hadoop][:log4j]['log4j.appender.TLA.layout.ConversionPattern']                        = '%d{ISO8601} %p %c: %m%n'
-default[:hadoop][:log4j]['hadoop.security.log.file']                                           = 'SecurityAuth.audit'
-default[:hadoop][:log4j]['log4j.appender.DRFAS']                                               = 'org.apache.log4j.DailyRollingFileAppender '
-default[:hadoop][:log4j]['log4j.appender.DRFAS.File']                                          = '${hadoop.log.dir}/${hadoop.security.log.file}'
-default[:hadoop][:log4j]['log4j.appender.DRFAS.layout']                                        = 'org.apache.log4j.PatternLayout'
-default[:hadoop][:log4j]['log4j.appender.DRFAS.layout.ConversionPattern']                      = '%d{ISO8601} %p %c: %m%n'
-default[:hadoop][:log4j]['log4j.category.SecurityLogger']                                      = '${hadoop.security.logger}'
-default[:hadoop][:log4j]['log4j.logger.org.apache.hadoop.fs.FSNamesystem.audit']               = 'WARN'
-default[:hadoop][:log4j]['log4j.logger.org.jets3t.service.impl.rest.httpclient.RestS3Service'] = 'ERROR'
-default[:hadoop][:log4j]['log4j.appender.EventCounter']                                        = 'org.apache.hadoop.metrics.jvm.EventCounter'
-default[:hadoop][:log4j]['log4j.appender.JSA']                                                 = 'org.apache.log4j.DailyRollingFileAppender'
-default[:hadoop][:log4j]['log4j.appender.JSA.File']                                            = '${hadoop.log.dir}/${hadoop.mapreduce.jobsummary.log.file}'
-default[:hadoop][:log4j]['log4j.appender.JSA.layout']                                          = 'org.apache.log4j.PatternLayout'
-default[:hadoop][:log4j]['log4j.appender.JSA.layout.ConversionPattern']                        = '%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n'
-default[:hadoop][:log4j]['log4j.appender.JSA.DatePattern']                                     = '.yyyy-MM-dd'
-default[:hadoop][:log4j]['log4j.logger.org.apache.hadoop.mapred.JobInProgress$JobSummary']     = '${hadoop.mapreduce.jobsummary.logger}'
-default[:hadoop][:log4j]['log4j.additivity.org.apache.hadoop.mapred.JobInProgress$JobSummary'] = 'false'
+# ======================================================================
+# CDH3 log4j format follows ============================================
+# ======================================================================
+
+default[:cdh3][:log4j]['hadoop.root.logger']                                                 = 'INFO,console'
+default[:cdh3][:log4j]['hadoop.security.logger']                                             = 'INFO,console'
+default[:cdh3][:log4j]['hadoop.log.dir']                                                     = "#{node[:hadoop][:logdir]}"
+default[:cdh3][:log4j]['hadoop.log.file']                                                    = 'hadoop.log'
+default[:cdh3][:log4j]['hadoop.mapreduce.jobsummary.logger']                                 = '${hadoop.root.logger}'
+default[:cdh3][:log4j]['hadoop.mapreduce.jobsummary.log.file']                               = 'hadoop-mapreduce.jobsummary.log'
+default[:cdh3][:log4j]['log4j.rootLogger']                                                   = '${hadoop.root.logger}, EventCounter'
+default[:cdh3][:log4j]['log4j.threshhold']                                                   = 'ALL'
+default[:cdh3][:log4j]['log4j.appender.DRFA']                                                = 'org.apache.log4j.DailyRollingFileAppender'
+default[:cdh3][:log4j]['log4j.appender.DRFA.File']                                           = '${hadoop.log.dir}/${hadoop.log.file}'
+default[:cdh3][:log4j]['log4j.appender.DRFA.DatePattern']                                    = '.yyyy-MM-dd'
+default[:cdh3][:log4j]['log4j.appender.DRFA.layout']                                         = 'org.apache.log4j.PatternLayout'
+default[:cdh3][:log4j]['log4j.appender.DRFA.layout.ConversionPattern']                       = '%d{ISO8601} %p %c: %m%n'
+default[:cdh3][:log4j]['log4j.appender.console']                                             = 'org.apache.log4j.ConsoleAppender'
+default[:cdh3][:log4j]['log4j.appender.console.target']                                      = 'System.err'
+default[:cdh3][:log4j]['log4j.appender.console.layout']                                      = 'org.apache.log4j.PatternLayout'
+default[:cdh3][:log4j]['log4j.appender.console.layout.ConversionPattern']                    = '%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n'
+default[:cdh3][:log4j]['hadoop.tasklog.taskid']                                              = 'null'
+default[:cdh3][:log4j]['hadoop.tasklog.iscleanup']                                           = 'false'
+default[:cdh3][:log4j]['hadoop.tasklog.noKeepSplits']                                        = '4'
+default[:cdh3][:log4j]['hadoop.tasklog.totalLogFileSize']                                    = '100'
+default[:cdh3][:log4j]['hadoop.tasklog.purgeLogSplits']                                      = 'true'
+default[:cdh3][:log4j]['hadoop.tasklog.logsRetainHours']                                     = '12'
+default[:cdh3][:log4j]['log4j.appender.TLA']                                                 = 'org.apache.hadoop.mapred.TaskLogAppender'
+default[:cdh3][:log4j]['log4j.appender.TLA.taskId']                                          = '${hadoop.tasklog.taskid}'
+default[:cdh3][:log4j]['log4j.appender.TLA.isCleanup']                                       = '${hadoop.tasklog.iscleanup}'
+default[:cdh3][:log4j]['log4j.appender.TLA.totalLogFileSize']                                = '${hadoop.tasklog.totalLogFileSize}'
+default[:cdh3][:log4j]['log4j.appender.TLA.layout']                                          = 'org.apache.log4j.PatternLayout'
+default[:cdh3][:log4j]['log4j.appender.TLA.layout.ConversionPattern']                        = '%d{ISO8601} %p %c: %m%n'
+default[:cdh3][:log4j]['hadoop.security.log.file']                                           = 'SecurityAuth.audit'
+default[:cdh3][:log4j]['log4j.appender.DRFAS']                                               = 'org.apache.log4j.DailyRollingFileAppender '
+default[:cdh3][:log4j]['log4j.appender.DRFAS.File']                                          = '${hadoop.log.dir}/${hadoop.security.log.file}'
+default[:cdh3][:log4j]['log4j.appender.DRFAS.layout']                                        = 'org.apache.log4j.PatternLayout'
+default[:cdh3][:log4j]['log4j.appender.DRFAS.layout.ConversionPattern']                      = '%d{ISO8601} %p %c: %m%n'
+default[:cdh3][:log4j]['log4j.category.SecurityLogger']                                      = '${hadoop.security.logger}'
+default[:cdh3][:log4j]['log4j.logger.org.apache.hadoop.fs.FSNamesystem.audit']               = 'WARN'
+default[:cdh3][:log4j]['log4j.logger.org.jets3t.service.impl.rest.httpclient.RestS3Service'] = 'ERROR'
+default[:cdh3][:log4j]['log4j.appender.EventCounter']                                        = 'org.apache.hadoop.metrics.jvm.EventCounter'
+default[:cdh3][:log4j]['log4j.appender.JSA']                                                 = 'org.apache.log4j.DailyRollingFileAppender'
+default[:cdh3][:log4j]['log4j.appender.JSA.File']                                            = '${hadoop.log.dir}/${hadoop.mapreduce.jobsummary.log.file}'
+default[:cdh3][:log4j]['log4j.appender.JSA.layout']                                          = 'org.apache.log4j.PatternLayout'
+default[:cdh3][:log4j]['log4j.appender.JSA.layout.ConversionPattern']                        = '%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n'
+default[:cdh3][:log4j]['log4j.appender.JSA.DatePattern']                                     = '.yyyy-MM-dd'
+default[:cdh3][:log4j]['log4j.logger.org.apache.hadoop.mapred.JobInProgress$JobSummary']     = '${hadoop.mapreduce.jobsummary.logger}'
+default[:cdh3][:log4j]['log4j.additivity.org.apache.hadoop.mapred.JobInProgress$JobSummary'] = 'false'
+
+# ======================================================================
+# CDH4 log4j format follows ============================================
+# ======================================================================
+
+# Define some default values that can be overridden by system properties
+default[:cdh4][:log4j]['hadoop.root.logger'] = "INFO,console"
+default[:cdh4][:log4j]['hadoop.security.logger'] = "INFO,console"
+default[:cdh4][:log4j]['hadoop.log.dir'] = "#{node[:hadoop][:logdir]}"
+default[:cdh4][:log4j]['hadoop.log.file'] = "hadoop.log"
+
+## Job Summary Appender  ====================================================
+# Use following logger to send summary to separate file defined by 
+# hadoop.mapreduce.jobsummary.log.file rolled daily:
+# hadoop.mapreduce.jobsummary.logger=INFO,JSA
+default[:cdh4][:log4j]['hadoop.mapreduce.jobsummary.logger'] = "${hadoop.root.logger}"
+default[:cdh4][:log4j]['hadoop.mapreduce.jobsummary.log.file'] = "hadoop-mapreduce.jobsummary.log"
+
+# Define the root logger to the system property "hadoop.root.logger".
+default[:cdh4][:log4j]['log4j.rootLogger'] = "${hadoop.root.logger}, EventCounter"
+
+# Logging Threshold
+default[:cdh4][:log4j]['log4j.threshhold'] = "ALL"
+
+## DAILY ROLLING FILE APPENDER ========================================
+default[:cdh4][:log4j]['log4j.appender.DRFA'] = "org.apache.log4j.DailyRollingFileAppender"
+default[:cdh4][:log4j]['log4j.appender.DRFA.File'] = "${hadoop.log.dir}/${hadoop.log.file}"
+
+# Rollver at midnight
+default[:cdh4][:log4j]['log4j.appender.DRFA.DatePattern'] = ".yyyy-MM-dd"
+
+# 30-day backup
+#log4j.appender.DRFA.MaxBackupIndex=30
+default[:cdh4][:log4j]['log4j.appender.DRFA.layout'] = "org.apache.log4j.PatternLayout"
+
+# Pattern format: Date LogLevel LoggerName LogMessage
+default[:cdh4][:log4j]['log4j.appender.DRFA.layout.ConversionPattern'] = "%d{ISO8601} %p %c: %m%n"
+# Debugging Pattern format
+#default[:cdh4][:log4j]['log4j.appender.DRFA.layout.ConversionPattern'] = "%d{ISO8601} %-5p %c{2} (%F:%M(%L)) - %m%n"
+
+## CONSOLE =================================================
+# Add "console" to rootlogger above if you want to use this 
+default[:cdh4][:log4j]['log4j.appender.console'] = "org.apache.log4j.ConsoleAppender"
+default[:cdh4][:log4j]['log4j.appender.console.target'] = "System.err"
+default[:cdh4][:log4j]['log4j.appender.console.layout'] = "org.apache.log4j.PatternLayout"
+default[:cdh4][:log4j]['log4j.appender.console.layout.ConversionPattern'] = "%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n"
+
+## TaskLog Appender =============================================
+default[:cdh4][:log4j]['log4j.appender.TLA'] = "org.apache.hadoop.mapred.TaskLogAppender"
+
+default[:cdh4][:log4j]['log4j.appender.TLA.layout'] = "org.apache.log4j.PatternLayout"
+default[:cdh4][:log4j]['log4j.appender.TLA.layout.ConversionPattern'] = "%d{ISO8601} %p %c: %m%n"
+
+default[:cdh4][:log4j]['log4j.appender.DRFAS.layout'] = "org.apache.log4j.PatternLayout"
+default[:cdh4][:log4j]['log4j.appender.DRFAS.layout.ConversionPattern'] = "%d{ISO8601} %p %c: %m%n"
+#new logger
+default[:cdh4][:log4j]['log4j.category.SecurityLogger'] = "${hadoop.security.logger}"
+
+## Rolling File Appender ====================================================
+default[:cdh4][:log4j]['log4j.appender.RFA'] = "org.apache.log4j.RollingFileAppender"
+default[:cdh4][:log4j]['log4j.appender.RFA.File'] = "${hadoop.log.dir}/${hadoop.log.file}"
+
+# Logfile size and and 30-day backups
+default[:cdh4][:log4j]['log4j.appender.RFA.MaxFileSize'] = "1MB"
+default[:cdh4][:log4j]['log4j.appender.RFA.MaxBackupIndex'] = "30"
+
+default[:cdh4][:log4j]['log4j.appender.RFA.layout'] = "org.apache.log4j.PatternLayout"
+default[:cdh4][:log4j]['log4j.appender.RFA.layout.ConversionPattern'] = "%d{ISO8601} %-5p %c{2} - %m%n"
+default[:cdh4][:log4j]['log4j.appender.RFA.layout.ConversionPattern'] = "%d{ISO8601} %-5p %c{2} (%F:%M(%L)) - %m%n"
+
+## Security audit appender =====================================
+default[:cdh4][:log4j]['hbase.security.log.file'] = "{{ hadoop['hadoop.log.dir'] }}/SecurityAuth.audit"
+default[:cdh4][:log4j]['hbase.security.log.maxfilesize'] = "256MB"
+default[:cdh4][:log4j]['hbase.security.log.maxbackupindex'] = "20"
+default[:cdh4][:log4j]['log4j.appender.RFAS'] = "org.apache.log4j.RollingFileAppender"
+default[:cdh4][:log4j]['log4j.appender.RFAS.File'] = "${hbase.log.dir}/${hbase.security.log.file}"
+default[:cdh4][:log4j]['log4j.appender.RFAS.MaxFileSize'] = "${hbase.security.log.maxfilesize}"
+default[:cdh4][:log4j]['log4j.appender.RFAS.MaxBackupIndex'] = "${hbase.security.log.maxbackupindex}"
+default[:cdh4][:log4j]['log4j.appender.RFAS.layout'] = "org.apache.log4j.PatternLayout"
+default[:cdh4][:log4j]['log4j.appender.RFAS.layout.ConversionPattern'] = "%d{ISO8601} %p %c: %m%n"
+default[:cdh4][:log4j]['log4j.category.SecurityLogger'] = "${hbase.security.logger}"
+default[:cdh4][:log4j]['log4j.additivity.SecurityLogger'] = "false"
+
+## FSNamesystem Audit logging ==================================================
+# All audit events are logged at INFO level
+default[:cdh4][:log4j]['log4j.logger.org.apache.hadoop.hdfs.server.namenode.FSNamesystem.audit'] = "WARN"
+
+# Custom Logging levels - comment these out if too verbose the logs
+default[:cdh4][:log4j]['log4j.logger.org.apache.hadoop.mapred.JobTracker'] = "DEBUG"
+default[:cdh4][:log4j]['log4j.logger.org.apache.hadoop.mapred.TaskTracker'] = "DEBUG"
+default[:cdh4][:log4j]['log4j.logger.org.apache.hadoop.hdfs.server.namenode.FSNamesystem.audit'] = "DEBUG"
+
+# Jets3t library
+default[:cdh4][:log4j]['log4j.logger.org.jets3t.service.impl.rest.httpclient.RestS3Service'] = "ERROR"
+
+## Null Appender =========================================================
+# Trap security logger on the hadoop client side
+default[:cdh4][:log4j]['log4j.appender.NullAppender'] = "org.apache.log4j.varia.NullAppender"
+
+## Event Counter Appender ==============================================
+# Sends counts of logging messages at different severity levels to Hadoop Metrics.
+default[:cdh4][:log4j]['log4j.appender.EventCounter'] = "org.apache.hadoop.log.metrics.EventCounter"
+
+## Job Summary Appender =====================================================
+default[:cdh4][:log4j]['log4j.appender.JSA'] = "org.apache.log4j.DailyRollingFileAppender"
+default[:cdh4][:log4j]['log4j.appender.JSA.File'] = "${hadoop.log.dir}/${hadoop.mapreduce.jobsummary.log.file}"
+default[:cdh4][:log4j]['log4j.appender.JSA.layout'] = "org.apache.log4j.PatternLayout"
+default[:cdh4][:log4j]['log4j.appender.JSA.layout.ConversionPattern'] = "%d{yy/MM/dd HH:mm:ss} %p %c{2}: %m%n"
+default[:cdh4][:log4j]['log4j.appender.JSA.DatePattern'] = ".yyyy-MM-dd"
+default[:cdh4][:log4j]['log4j.logger.org.apache.hadoop.mapred.JobInProgress$JobSummary'] = "${hadoop.mapreduce.jobsummary.logger}"
+default[:cdh4][:log4j]['log4j.additivity.org.apache.hadoop.mapred.JobInProgress$JobSummary'] = "false"
 
