@@ -1,6 +1,8 @@
 # Cloudera cookbook
 
-Installs and configures [Cloudera's](http://www.cloudera.com/) Hadoop + Hive + HBase + Thrift.
+Installs and configures [Cloudera](http://www.cloudera.com/) Hadoop + Hive +
+HBase + Thrift. Installs either CDH3u3 or CDH4u2 (with trivial changes required
+to support other minor revisions of CDH3 or CDH4).
 
 # Requirements
 
@@ -23,7 +25,9 @@ your IP addresses of your HBase machines):
   done >> /etc/hosts
 ```
 
-If the four hard drives aren't mounted, you need to fdisk, mkfs, and mount them.
+Here's an example for a four-drive system. If the four hard drives aren't
+mounted, you need to fdisk, mkfs, and mount them, then put the mounts into
+/etc/fstab.
 
 ```
 # c=1
@@ -34,19 +38,15 @@ If the four hard drives aren't mounted, you need to fdisk, mkfs, and mount them.
     mount /dev/sd${i}1 /mnt/disk${c} ; \
     c=$[ $c + 1 ] ; \
   done
-```
 
-Then to make this survive reboots, put them into /etc/fstab:
-
-```
 # echo "
 /dev/sdb1		/mnt/disk1		ext4	defaults	0 0
 /dev/sdc1		/mnt/disk2		ext4	defaults	0 0
 /dev/sdd1		/mnt/disk3		ext4	defaults	0 0" >> /etc/fstab
 ```
 
-Make a directory /mnt/disk4 that is just a plain directory on / if you want
-to use / as well (for ease of configuration of HBase):
+You may wish to make a directory /mnt/disk4 that is just a plain directory on /
+if you want to use / as well (for ease of configuration of HBase):
 
 ```
 mkdir /mnt/disk4

@@ -19,13 +19,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# also change JAVA_HOME below if you change this.
-default[:java][:install_flavor]           = "oracle"
-default[:java][:java_home]                = "/usr/java/default"
-
 ## # which to intstall - CDH3...
 ## default[:hadoop][:version]                = "0.20"
 ## default[:hadoop][:release]                = "3u3"
+## # leave these as "nil" they'll be fixed by recipe
 ## default[:hadoop][:yum_repo_url]           = nil
 ## default[:hadoop][:yum_repo_key_url]       = nil
 ## default[:hadoop][:binloc]                 = "/usr/lib/hadoop-#{node[:hadoop][:version]}/bin"
@@ -75,21 +72,19 @@ default[:hbase][:conf_dir]                = "conf.palomino"
 default[:hadoop][:rackaware][:datacenter] = "default"
 default[:hadoop][:rackaware][:rack]       = "rack0"
 
+default[:java][:install_flavor]           = "oracle"
+default[:java][:java_home]                = "/usr/java/default"
+
 # generates hadoop-env.sh
 default[:hadoop][:hadoop_env] = {
 	# also change hadoop.home below if you change this
 	"HADOOP_HOME" => "#{node[:hadoop][:home]}",
 	"HADOOP_NAMENODE_USER" => "hdfs",
 
-	# The only required environment variable is JAVA_HOME.  All others are
-	# optional.  When running a distributed configuration it is best to
-	# set JAVA_HOME in this file, so that it is correctly defined on
-	# remote nodes.
-
 	# typically Java goes into /usr/java/<garbage> and there's a symlink into
 	# the most recent version of Java called "default" in /usr/java. that's how
 	# it must be installed for this cookbook to work.
-	"JAVA_HOME" => "/usr/java/default",
+	"JAVA_HOME" => "#{node[:java][:java_home]}",
 
 	# Extra Java CLASSPATH elements. Optional.
 	# HADOOP_CLASSPATH="<extra_entries>:$HADOOP_CLASSPATH"
@@ -160,7 +155,7 @@ default[:hbase][:hbase_env] = {
 	"HBASE_MANAGES_ZK" => "false",
 
 	# The java implementation to use. Java 1.6 required.
-	"JAVA_HOME" => "/usr/java/default/",
+	"JAVA_HOME" => "#{node[:java][:java_home]}/",
 
 	# Extra Java CLASSPATH elements. Optional.
 	# "HBASE_CLASSPATH" => ""
