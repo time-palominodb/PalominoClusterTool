@@ -59,5 +59,6 @@ end
 
 service "hadoop-#{node[:hadoop][:version]}-secondarynamenode" do
   action [ :start, :enable ]
+  supports :status => true
 end
 

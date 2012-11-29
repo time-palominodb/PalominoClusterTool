@@ -80,9 +80,11 @@ end
 if node[:hadoop][:release] == '3u3'
   service "hadoop-#{node[:hadoop][:version]}-datanode" do
     action [ :start, :enable ]
+    supports :status => true
   end
 elsif node[:hadoop][:release] == '4u2'
   service "hadoop-hdfs-datanode" do
     action [ :start, :enable ]
+    supports :status => true
   end
 end

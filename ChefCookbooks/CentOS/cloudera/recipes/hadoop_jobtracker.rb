@@ -25,6 +25,7 @@ if node[:hadoop][:release] == '4u2'
   package "hadoop-#{node[:hadoop][:version]}-mapreduce-jobtracker"
   service "hadoop-#{node[:hadoop][:version]}-mapreduce-jobtracker" do
     action [ :start, :enable ]
+    supports :status => true
   end
 elsif node[:hadoop][:release] == '3u3'
   package "hadoop-#{node[:hadoop][:version]}-jobtracker"
@@ -39,6 +40,7 @@ elsif node[:hadoop][:release] == '3u3'
   end
   service "hadoop-#{node[:hadoop][:version]}-jobtracker" do
     action [ :start, :enable ]
+    supports :status => true
   end
 end
 

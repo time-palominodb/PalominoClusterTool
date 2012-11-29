@@ -21,6 +21,7 @@ if node[:hadoop][:release] == '4u2'
 
   service "hbase-master" do
     action [ :start, :enable ]
+    supports :status => true
   end
 elsif node[:hadoop][:release] == '3u3'
   package "hadoop-hbase-master"
@@ -57,6 +58,7 @@ elsif node[:hadoop][:release] == '3u3'
 
   service "hadoop-hbase-master" do
     action [ :start, :enable ]
+    supports :status => true
   end
 end
 
