@@ -254,11 +254,17 @@ if node[:hadoop][:release] == '3u3'
   end
 end
 
-execute "update hadoop alternatives" do
+execute "update hadoop alternatives install" do
   command "alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/#{node[:hadoop][:conf_dir]} 50"
-  command "alternatives --set hadoop-conf /etc/hadoop/#{node[:hadoop][:conf_dir]} "
+end
+execute "update hadoop alternatives set" do
+  command "alternatives --set hadoop-conf /etc/hadoop/#{node[:hadoop][:conf_dir]}"
+end
+execute "update hbase alternatives install" do
   command "alternatives --install /etc/hbase/conf hbase-conf /etc/hbase/#{node[:hbase][:conf_dir]} 50"
-  command "alternatives --set hbase-conf /etc/hbase/#{node[:hbase][:conf_dir]} "
+end
+execute "update hbase alternatives set" do
+  command "alternatives --set hbase-conf /etc/hbase/#{node[:hbase][:conf_dir]}"
 end
 
 # need to set ulimits for HBase and Hadoop and Mapred users
