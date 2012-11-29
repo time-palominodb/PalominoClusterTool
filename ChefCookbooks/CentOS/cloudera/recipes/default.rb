@@ -40,20 +40,23 @@ end
 hadoop_conf_dir = "/etc/hadoop/#{node[:hadoop][:conf_dir]}"
 hbase_conf_dir = "/etc/hbase/#{node[:hbase][:conf_dir]}"
 
-directory hadoop_conf_dir do
-  mode 0755
-  owner "root"
-  group "root"
-  action :create
-  recursive true
-end
+if node[:hadoop][:release] == '3u3'
+  # cdh4 seems to do this already
+  directory hadoop_conf_dir do
+    mode 0755
+    owner "root"
+    group "root"
+    action :create
+    recursive true
+  end
 
-directory hbase_conf_dir do
-  mode 0755
-  owner "root"
-  group "root"
-  action :create
-  recursive true
+  directory hbase_conf_dir do
+    mode 0755
+    owner "root"
+    group "root"
+    action :create
+    recursive true
+  end
 end
 
 directory "#{node[:hbase][:temp_dir]}" do
@@ -256,6 +259,7 @@ end
 
 execute "update hadoop alternatives" do
   command "alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/#{node[:hadoop][:conf_dir]} 50"
+  command "alternatives --set hadoop-conf /etc/hadoop/#{node[:hadoop][:conf_dir]} "
 end
 
 # need to set ulimits for HBase and Hadoop and Mapred users

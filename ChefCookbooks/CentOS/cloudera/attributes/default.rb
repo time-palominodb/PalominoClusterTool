@@ -66,8 +66,10 @@ default[:mountpoint][:disk4]                      = "/mnt/disk4"
 default[:hbase][:temp_dir]                = "/var/lib/hbase/tmp"
 default[:hbase][:pid_dir]                 = "/var/run/hbase"
 
-default[:hadoop][:conf_dir]               = "conf"
-default[:hbase][:conf_dir]                = "conf"
+# alternatives will make sure /etc/[hadoop|hbase]/conf is a symlink to these
+# name them anything but "conf"
+default[:hadoop][:conf_dir]               = "conf.palomino"
+default[:hbase][:conf_dir]                = "conf.palomino"
 
 # Provide rack info
 default[:hadoop][:rackaware][:datacenter] = "default"
