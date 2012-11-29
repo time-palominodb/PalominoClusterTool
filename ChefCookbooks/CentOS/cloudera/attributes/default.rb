@@ -29,12 +29,14 @@ default[:java][:java_home]                = "/usr/java/default"
 ## default[:hadoop][:yum_repo_url]           = nil
 ## default[:hadoop][:yum_repo_key_url]       = nil
 ## default[:hadoop][:binloc]                 = "/usr/lib/hadoop-#{node[:hadoop][:version]}/bin"
+## default[:hadoop][:home]                   = "/usr/lib/hadoop-0.20/"
 # or CDH4... with MRv1 (not YARN)
 default[:hadoop][:version]                = "0.20"
 default[:hadoop][:release]                = "4u2"
 default[:hadoop][:yum_repo_url]           = "http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/4/"
 default[:hadoop][:yum_repo_key_url]       = "http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera"
 default[:hadoop][:binloc]                 = "/usr/lib/hadoop/libexec"
+default[:hadoop][:home]                   = "/usr/lib/hadoop/client-0.20/"
 
 # Ganglia multicast IP address - change to Ganglia multicast IP address or collector gmond
 default[:ganglia][:ipaddr]                = "10.0.0.201"
@@ -72,7 +74,7 @@ default[:hadoop][:rackaware][:rack]       = "rack0"
 # generates hadoop-env.sh
 default[:hadoop][:hadoop_env] = {
 	# also change hadoop.home below if you change this
-	"HADOOP_HOME" => "/usr/lib/hadoop-0.20/",
+	"HADOOP_HOME" => "#{node[:hadoop][:home]}",
 	"HADOOP_NAMENODE_USER" => "hdfs",
 
 	# The only required environment variable is JAVA_HOME.  All others are
@@ -232,7 +234,7 @@ default[:hadoop][:hdfs_site] = {
 	# where to put hadoop directories
 	"hadoop.log.dir" => "/var/log/hadoop",
 	"hadoop.conf.dir" => "/etc/hadoop/conf",
-	"hadoop.home" => "/usr/lib/hadoop-0.20/",
+	"hadoop.home" => "#{node[:hadoop][:home]}",
 
 	# TODO: unsure what these are - research them
 	"dfs.namenode.plugins" => "org.apache.hadoop.thriftfs.NamenodePlugin",
