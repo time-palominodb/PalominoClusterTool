@@ -241,7 +241,7 @@ directory hadoop_tmp_dir do
   recursive true
 end
 
-template "/usr/lib/hadoop-#{node[:hadoop][:version]}/bin/hadoop-config.sh" do
+template "#{node[:hadoop][:binloc]}/hadoop-config.sh" do
   source "hadoop_config.erb"
   mode 0755
   owner "root"
@@ -252,7 +252,7 @@ template "/usr/lib/hadoop-#{node[:hadoop][:version]}/bin/hadoop-config.sh" do
 end
 
 execute "update hadoop alternatives" do
-  command "alternatives --install /etc/hadoop-#{node[:hadoop][:version]}/conf hadoop-#{node[:hadoop][:version]}-conf /etc/hadoop-#{node[:hadoop][:version]}/#{node[:hadoop][:conf_dir]} 50"
+  command "alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/#{node[:hadoop][:conf_dir]} 50"
 end
 
 # need to set ulimits for HBase and Hadoop and Mapred users

@@ -28,11 +28,13 @@ default[:java][:java_home]                = "/usr/java/default"
 ## default[:hadoop][:release]                = "3u3"
 ## default[:hadoop][:yum_repo_url]           = nil
 ## default[:hadoop][:yum_repo_key_url]       = nil
+## default[:hadoop][:binloc]                 = "/usr/lib/hadoop-#{node[:hadoop][:version]}/bin"
 # or CDH4... with MRv1 (not YARN)
 default[:hadoop][:version]                = "0.20"
 default[:hadoop][:release]                = "4u2"
 default[:hadoop][:yum_repo_url]           = "http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/4/"
 default[:hadoop][:yum_repo_key_url]       = "http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera"
+default[:hadoop][:binloc]                 = "/usr/lib/hadoop/libexec"
 
 # Ganglia multicast IP address - change to Ganglia multicast IP address or collector gmond
 default[:ganglia][:ipaddr]                = "10.0.0.201"
