@@ -23,8 +23,17 @@ include_recipe "cloudera"
 
 if node[:hadoop][:release] == '4u2'
   package "hadoop-#{node[:hadoop][:version]}-mapreduce-tasktracker"
-else
+elsif node[:hadoop][:release] == '3u3'
   package "hadoop-#{node[:hadoop][:version]}-tasktracker"
+
+  template "/etc/init.d/hadoop-#{node[:hadoop][:version]}-tasktracker" do
+    mode 0755
+    owner "root"
+    group "root"
+    variables(
+      :java_home => node[:java][:java_home]
+    )
+  end
 end
 
 node[:hadoop][:mapred_site]['mapred.local.dir'].split(',').each do |dir|
@@ -34,15 +43,6 @@ node[:hadoop][:mapred_site]['mapred.local.dir'].split(',').each do |dir|
     group "mapred"
     action :create
   end
-end
-
-template "/etc/init.d/hadoop-#{node[:hadoop][:version]}-tasktracker" do
-  mode 0755
-  owner "root"
-  group "root"
-  variables(
-    :java_home => node[:java][:java_home]
-  )
 end
 
 service "hadoop-#{node[:hadoop][:version]}-tasktracker" do
