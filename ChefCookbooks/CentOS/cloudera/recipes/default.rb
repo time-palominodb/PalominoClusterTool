@@ -228,7 +228,13 @@ end
 
 topology = { :options => node[:hadoop][:topology] }
 
-topology_dir = File.dirname(node[:hadoop][:hdfs_site]['topology.script.file.name'])
+if node[:hadoop][:release] == '3u3'
+  topology_dir = File.dirname(node[:cdh3][:hdfs_site]['topology.script.file.name'])
+  topology_file = node[:cdh3][:hdfs_site]['topology.script.file.name']
+elsif node[:hadoop][:release] == '4u2'
+  topology_dir = File.dirname(node[:cdh4][:hdfs_site]['topology.script.file.name'])
+  topology_file = node[:cdh4][:hdfs_site]['topology.script.file.name']
+end
 
 directory topology_dir do
   mode 0755
@@ -238,7 +244,7 @@ directory topology_dir do
   recursive true
 end
 
-template node[:hadoop][:hdfs_site]['topology.script.file.name'] do
+template topology_file do
   source "topology.rb.erb"
   mode 0755
   owner "hdfs"
