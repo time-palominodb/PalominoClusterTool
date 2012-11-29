@@ -36,7 +36,9 @@ default[:hadoop][:release]                = "4u2"
 default[:hadoop][:yum_repo_url]           = "http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/4/"
 default[:hadoop][:yum_repo_key_url]       = "http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera"
 default[:hadoop][:binloc]                 = "/usr/lib/hadoop/libexec"
-default[:hadoop][:home]                   = "/usr/lib/hadoop/client-0.20/"
+default[:hadoop][:home]                   = "/usr/lib/hadoop"
+
+default[:hadoop][:logdir]                 = "/var/log/hadoop"
 
 # Ganglia multicast IP address - change to Ganglia multicast IP address or collector gmond
 default[:ganglia][:ipaddr]                = "10.0.0.201"
@@ -111,7 +113,7 @@ default[:hadoop][:hadoop_env] = {
 	# "HADOOP_SSH_OPTS" => ""-o ConnectTimeout=1 -o SendEnv=HADOOP_CONF_DIR"",
 
 	# Where log files are stored.  $HADOOP_HOME/logs by default.
-	"HADOOP_LOG_DIR" => "/var/log/hadoop",
+	"HADOOP_LOG_DIR" => "#{node[:hadoop][:logdir]}",
 
 	# File naming remote slave hosts.  $HADOOP_HOME/conf/slaves by default.
 	"HADOOP_SLAVES" => "/etc/hadoop/conf/slaves",
@@ -232,7 +234,7 @@ default[:hadoop][:hdfs_site] = {
 	
 	# where to store the NameNode fsimage - can be comma-delimited list of
 	# where to put hadoop directories
-	"hadoop.log.dir" => "/var/log/hadoop",
+	"hadoop.log.dir" => "#{node[:hadoop][:logdir]}",
 	"hadoop.conf.dir" => "/etc/hadoop/conf",
 	"hadoop.home" => "#{node[:hadoop][:home]}",
 
@@ -242,11 +244,17 @@ default[:hadoop][:hdfs_site] = {
 
 	# for defining rack topology
 	"topology.script.file.name" => "/usr/local/bin/hadoop-topology/nodes.rb",
+
+	# cdh4 but shouldn't hurt cdh3 to have extra param
+	"dfs.permissions.superusergroup" => "hadoop",
 }
 
 default[:hadoop][:core_site] = {
 	# unix FS to use for temp files
 	"hadoop.tmp.dir" => "/tmp",
+
+	# for cdh4
+	"fs.defaultFS" => "hdfs://#{node[:hadoop][:namenode_ipaddress]}:#{node[:hadoop][:namenode_port]}/",
 }
 
 default[:hadoop][:mapred_site] = {
@@ -439,7 +447,7 @@ default[:hadoop][:mapred_site]['mapred.fairscheduler.allocation.file'] = "/etc/h
 
 default[:hadoop][:log4j]['hadoop.root.logger']                                                 = 'INFO,console'
 default[:hadoop][:log4j]['hadoop.security.logger']                                             = 'INFO,console'
-default[:hadoop][:log4j]['hadoop.log.dir']                                                     = '/var/log/hadoop'
+default[:hadoop][:log4j]['hadoop.log.dir']                                                     = '#{node[:hadoop][:logdir]}'
 default[:hadoop][:log4j]['hadoop.log.file']                                                    = 'hadoop.log'
 default[:hadoop][:log4j]['hadoop.mapreduce.jobsummary.logger']                                 = '${hadoop.root.logger}'
 default[:hadoop][:log4j]['hadoop.mapreduce.jobsummary.log.file']                               = 'hadoop-mapreduce.jobsummary.log'

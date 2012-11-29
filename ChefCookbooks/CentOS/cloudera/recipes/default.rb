@@ -241,14 +241,17 @@ directory hadoop_tmp_dir do
   recursive true
 end
 
-template "#{node[:hadoop][:binloc]}/hadoop-config.sh" do
-  source "hadoop_config.erb"
-  mode 0755
-  owner "root"
-  group "root"
-  variables(
-    :java_home => node[:java][:java_home]
-  )
+# only needed for 3u3?
+if node[:hadoop][:release] == '3u3'
+  template "#{node[:hadoop][:binloc]}/hadoop-config.sh" do
+    source "hadoop_config.erb"
+    mode 0755
+    owner "root"
+    group "root"
+    variables(
+      :java_home => node[:java][:java_home]
+    )
+  end
 end
 
 execute "update hadoop alternatives" do

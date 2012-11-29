@@ -24,9 +24,19 @@
 include_recipe "cloudera"
 
 if node[:hadoop][:release] == '4u2'
+  # use default CDH4 init script
   package "hadoop-hdfs-datanode"
-else
+elsif node[:hadoop][:release] == '3u3'
   package "hadoop-#{node[:hadoop][:version]}-datanode"
+
+  template "/etc/init.d/hadoop-0.20-datanode" do
+    mode 0755
+    owner "root"
+    group "root"
+    variables(
+      :java_home => node[:java][:java_home]
+    )
+  end
 end
 
 #Example hue-plugins-1.2.0.0+114.20-1.noarch 
@@ -34,15 +44,6 @@ package "hue-plugins" do
   # if you need a particular version of hue, uncomment this and define the vars
   #version "#{node[:hadoop][:hue_plugin_version]}-#{node[:hadoop][:hue_plugin_release]}"
   action :install
-end
-
-template "/etc/init.d/hadoop-0.20-datanode" do
-  mode 0755
-  owner "root"
-  group "root"
-  variables(
-    :java_home => node[:java][:java_home]
-  )
 end
 
 node[:hadoop][:hdfs_site]['dfs.data.dir'].split(',').each do |dir|

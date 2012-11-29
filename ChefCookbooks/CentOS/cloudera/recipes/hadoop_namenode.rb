@@ -22,18 +22,19 @@
 include_recipe "cloudera"
 
 if node[:hadoop][:release] == '4u2'
+  # use default CDH4 init script
   package "hadoop-hdfs-namenode"
-else
+elsif node[:hadoop][:release] == '3u3'
   package "hadoop-#{node[:hadoop][:version]}-namenode"
-end
 
-template "/etc/init.d/hadoop-#{node[:hadoop][:version]}-namenode" do
-  mode 0755
-  owner "root"
-  group "root"
-  variables(
-    :java_home => node[:java][:java_home]
-  )
+  template "/etc/init.d/hadoop-#{node[:hadoop][:version]}-namenode" do
+    mode 0755
+    owner "root"
+    group "root"
+    variables(
+      :java_home => node[:java][:java_home]
+    )
+  end
 end
 
 node[:hadoop][:hdfs_site]['dfs.name.dir'].split(',').each do |dir|
