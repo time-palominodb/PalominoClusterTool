@@ -45,6 +45,13 @@ Then to make this survive reboots, put them into /etc/fstab:
 /dev/sdd1		/mnt/disk3		ext4	defaults	0 0" >> /etc/fstab
 ```
 
+Make a directory /mnt/disk4 that is just a plain directory on / if you want
+to use / as well (for ease of configuration of HBase):
+
+```
+mkdir /mnt/disk4
+```
+
 The Cookbook should be named "cloudera." If you name it anything else, recipes
 will die with error as they hardcode "cloudera" in several places. If you want
 to change the name, search for "include_recipe" in .rb files, and change
@@ -56,7 +63,7 @@ cookbook to the Chef server:
 ```
 
 First bootstrap the 7 nodes. Call them hbase-001, hbase-002... If you want the
-rest of these instructions to work without alteration. Here's some pseudocode,
+rest of these instructions to work without alteration. Here is some pseudocode,
 but you have to do it manually (or write your own code) since your IP addresses
 and node names could be anything.
 
@@ -106,8 +113,8 @@ SecondaryNameNode to all be on their own servers.
   done
 ```
 
-Next, we'll do the "slave" nodes. I put DataNode, TaskTracker, and RegionServer
-onto each.
+Next, do the "slave" nodes. Put DataNode, TaskTracker, and RegionServer onto
+each.
 
 ```
 # for i in hadoop_datanode hadoop_tasktracker hbase_regionserver ; do \
@@ -117,28 +124,15 @@ onto each.
   done
 ```
 
-Edit attributes/default.rb and look for the several hashes of the form:
+Edit `attributes/default.rb` and give it a thorough once-over. The things
+most-likely requiring change are at the top of the file, but please spend
+5-20 minutes with this file to make sure you at least have a basic understanding
+of it. It will form the core of your distributed database cluster.
 
-```
-default[:hadoop][:hdfs_site] = {
-        "dfs.namenode.plugins" => "org.apache.hadoop.thriftfs.NamenodePlugin",
-        "dfs.datanode.plugins" => "org.apache.hadoop.thriftfs.DatanodePlugin",
-        "topology.script.file.name" => "/usr/local/bin/hadoop-topology/nodes.rb",
-        "dfs.data.dir" => "/disk1/hadoop/datadir,/disk2/hadoop/datadir,/disk3/hadoop/datadir",
-} 
-```
-
-The Riot Chef Recipes assume you have a topology script for defining your
-cluster topology. You must have such a script, even if it will do nothing. The
-contents of this script will be generated from topology.rb.erb. I've stubbed
-out this template because I could not get it working in short time. Feel free
-to offer solutions for bettering this on the mailing list.
-
-There are several other hashes that modification before you begin. For Hadoop
-(core-site.xml, hdfs-site.xml, mapred-site.xml, hadoop-env.sh, etc) and HBase
-(hbase-env.sh, hbase-site.xml, etc). Just give the entire
-`attributes/defaults.rb` a good once-over and make sure everything makes sense to
-you.
+You will need to define your NameNode and JobTracker and Ganglia IP addresses
+(do not worry about Ganglia if you have no gmonds running in your setup) and
+may need to make changes depending on whether you chose CDH3 or CDH4 as your
+Cloudera distribution.
 
 Do "chef-client" on all your roles. Do it several times, since things always
 seem to fail somewhere once or twice. Or read the outputs on every node
@@ -260,6 +254,10 @@ And now start the zookeeper server on every node of the ensemble:
 # zookeeper-server start
 ```
 
+If Zookeeper fails to start, saying you need to initialise the system, be sure
+your zoo.cfg dataDir is actually /var/zookeeper as noted herein (as opposed to,
+for example, /var/lib/zookeeper). You should not need to initialise Zookeeper.
+
 In the interest of saving you time, note that it appears to be harmless to put
 the config above on ALL nodes, whether or not they participate in the Zookeeper
 ensemble, and do a "zookeeper-server start" on all nodes as well. I am not yet
@@ -268,7 +266,11 @@ this topic welcome on the mailing list.
 
 ## Starting the Cluster
 
-Assuming Chef hasn't started all the proper roles (it never seems to succeed
+Note that CDH4 documentation (and perhaps others?) indicate you should not
+run /etc/init.d scripts directly, but instead should use the "service" command.
+Feel free to do whichever leads to more stability and uptime in your cluster.
+
+Assuming Chef starts all the proper roles (it never seems to succeed
 for me), you can start them by having ClusterSSH (or equivalent) and run this
 on all your nodes:
 
