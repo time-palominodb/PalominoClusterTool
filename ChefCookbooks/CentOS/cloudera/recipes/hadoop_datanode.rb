@@ -46,14 +46,25 @@ package "hue-plugins" do
   action :install
 end
 
-node[:hadoop][:hdfs_site]['dfs.data.dir'].split(',').each do |dir|
-  directory dir do
-    mode 0755
-    owner "hdfs"
-    group "hdfs"
-    action :create
-    recursive true
-  end
+if node[:hadoop][:release] == '3u3'
+  node[:cdh3][:hdfs_site]['dfs.data.dir'].split(',').each do |dir|
+    directory dir do
+      mode 0755
+      owner "hdfs"
+      group "hdfs"
+      action :create
+      recursive true
+    end
+elsif node[:hadoop][:release] == '4u2'
+  node[:cdh4][:hdfs_site]['dfs.data.dir'].split(',').each do |dir|
+    directory dir do
+      mode 0755
+      owner "hdfs"
+      group "hdfs"
+      action :create
+      recursive true
+    end
+end
 
   directory "#{dir}/lost+found" do
     owner "hdfs"

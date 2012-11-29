@@ -214,7 +214,7 @@ default[:hbase][:hbase_env] = {
 default[:cdh4][:hdfs_site] = {
 	# directories for redundancy if the filesystem isn't already redundant,
 	# which Palomino recommends
-	"dfs.name.dir" => "file:///var/lib/hadoop/namedir,file://#{node[:mountpoint][:disk1]}/hadoop/namedir,file://#{node[:mountpoint][:disk2]}/hadoop/namedir,file://#{node[:mountpoint][:disk3]}/hadoop/namedir",
+	"dfs.name.dir" => "/var/lib/hadoop/namedir,#{node[:mountpoint][:disk1]}/hadoop/namedir,#{node[:mountpoint][:disk2]}/hadoop/namedir,#{node[:mountpoint][:disk3]}/hadoop/namedir",
 
 	# if this setting is too low, you'll get ERRORs on your DataNodes when the
 	# cluster gets to a Real Usage Pattern. unaware of any reason not to set
@@ -227,7 +227,7 @@ default[:cdh4][:hdfs_site] = {
 	# consider that logs will go into / and log writing is different access
 	# pattern than data writing, so it's probabaly best to dedicate one of
 	# those drives to logs data
-	"dfs.data.dir" => "file://#{node[:mountpoint][:disk1]}/hadoop/datadir,file://#{node[:mountpoint][:disk2]}/hadoop/datadir,file://#{node[:mountpoint][:disk3]}/hadoop/datadir,file://#{node[:mountpoint][:disk4]}/hadoop/datadir",
+	"dfs.data.dir" => "#{node[:mountpoint][:disk1]}/hadoop/datadir,#{node[:mountpoint][:disk2]}/hadoop/datadir,#{node[:mountpoint][:disk3]}/hadoop/datadir,#{node[:mountpoint][:disk4]}/hadoop/datadir",
 	
 	# this is the default if a file doesn't specify its own replication
 	# count, but note that you can per-file specify a replication count, so
